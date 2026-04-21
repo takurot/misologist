@@ -1,54 +1,299 @@
+'use client';
+
 import Link from 'next/link';
 
 export default function HomePage() {
   return (
-    <div className="max-w-6xl mx-auto px-4 py-16">
-      <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold text-foreground mb-4">
-          Misologist
-        </h1>
-        <p className="text-xl text-muted-foreground mb-2">
-          発酵診断・職人知識継承エンジン
-        </p>
-        <p className="text-muted-foreground">
-          Claude Opus 4.7の視覚診断とエージェント技術で、あなたの味噌造りを支援します
-        </p>
-      </div>
+    <div>
+      {/* ── Hero ─────────────────────────────────── */}
+      <section
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          padding: '7rem 1.5rem 6rem',
+          minHeight: '70vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}
+      >
+        {/* Breathing background gradient */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: '-20%',
+            background: 'radial-gradient(ellipse 70% 60% at 50% 60%, hsl(28, 55%, 14%) 0%, transparent 70%)',
+            animation: 'breathe 20s ease-in-out infinite',
+            zIndex: 0,
+          }}
+        />
+        {/* Secondary warm glow */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: '-10%',
+            background: 'radial-gradient(ellipse 40% 35% at 30% 40%, hsl(8, 50%, 12%) 0%, transparent 65%)',
+            animation: 'breathe 28s ease-in-out infinite reverse',
+            zIndex: 0,
+          }}
+        />
 
-      <div className="grid md:grid-cols-3 gap-6">
-        <Link href="/diagnosis" className="group block">
-          <div className="border rounded-lg p-6 bg-card hover:border-primary transition-colors">
-            <div className="text-3xl mb-3">🔬</div>
-            <h2 className="text-lg font-semibold mb-2">緊急発酵診断</h2>
-            <p className="text-sm text-muted-foreground">
-              写真をアップロードするだけで、AIが発酵状態を即座に診断。
-              GREEN/YELLOW/REDの緊急度レベルで判定します。
-            </p>
+        <div
+          className="max-w-6xl mx-auto w-full"
+          style={{ position: 'relative', zIndex: 1 }}
+        >
+          {/* Decorative label */}
+          <div className="animate-in" style={{ marginBottom: '1.5rem' }}>
+            <span className="section-label">Fermentation Intelligence</span>
           </div>
-        </Link>
 
-        <Link href="/batches" className="group block">
-          <div className="border rounded-lg p-6 bg-card hover:border-primary transition-colors">
-            <div className="text-3xl mb-3">📋</div>
-            <h2 className="text-lg font-semibold mb-2">バッチ管理</h2>
-            <p className="text-sm text-muted-foreground">
-              複数の味噌バッチを長期管理。AIエージェントが毎日の発酵状態を
-              監視し、適切なアクションを提案します。
-            </p>
-          </div>
-        </Link>
+          {/* Main headline */}
+          <h1
+            className="animate-in delay-1"
+            style={{
+              fontFamily: 'var(--font-cormorant), Georgia, serif',
+              fontSize: 'clamp(3.5rem, 9vw, 8rem)',
+              fontWeight: 300,
+              lineHeight: 0.95,
+              letterSpacing: '-0.01em',
+              color: 'hsl(35, 25%, 90%)',
+              marginBottom: '1.5rem',
+              maxWidth: '18ch',
+            }}
+          >
+            発酵を、<br />
+            <em
+              style={{
+                fontStyle: 'italic',
+                color: 'hsl(30, 68%, 55%)',
+                fontWeight: 400,
+              }}
+            >
+              科学にする。
+            </em>
+          </h1>
 
-        <Link href="/knowledge" className="group block">
-          <div className="border rounded-lg p-6 bg-card hover:border-primary transition-colors">
-            <div className="text-3xl mb-3">📖</div>
-            <h2 className="text-lg font-semibold mb-2">知識翻訳</h2>
-            <p className="text-sm text-muted-foreground">
-              職人の経験則を発酵化学で解明。「塩は多めに」などの伝統知識を
-              科学的に解説します。
-            </p>
+          {/* Sub copy */}
+          <p
+            className="animate-in delay-2"
+            style={{
+              fontFamily: 'var(--font-lora), serif',
+              fontSize: '1rem',
+              lineHeight: 1.75,
+              color: 'hsl(35, 15%, 55%)',
+              maxWidth: '44ch',
+              marginBottom: '2.5rem',
+            }}
+          >
+            味噌職人20年の経験を、Claude Opus 4.7が発酵化学として語る。<br />
+            写真一枚から、カビの種別・化学的根拠・対処法まで。
+          </p>
+
+          <div className="animate-in delay-3">
+            <Link href="/diagnosis">
+              <span className="btn-primary">診断を開始する</span>
+            </Link>
           </div>
-        </Link>
-      </div>
+        </div>
+
+        {/* Large decorative kanji */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            right: '-2%',
+            top: '10%',
+            fontFamily: 'var(--font-cormorant), Georgia, serif',
+            fontSize: 'clamp(12rem, 22vw, 26rem)',
+            fontWeight: 300,
+            color: 'hsl(25, 30%, 11%)',
+            lineHeight: 1,
+            userSelect: 'none',
+            letterSpacing: '-0.05em',
+            zIndex: 0,
+          }}
+        >
+          味
+        </div>
+      </section>
+
+      {/* ── Features ─────────────────────────────── */}
+      <section
+        style={{
+          borderTop: '1px solid hsl(25, 18%, 12%)',
+          padding: '0 1.5rem',
+        }}
+      >
+        <div
+          className="max-w-6xl mx-auto"
+          style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 0 }}
+        >
+          {/* Feature 01 — large */}
+          <FeatureCard
+            num="01"
+            href="/diagnosis"
+            title="緊急発酵診断"
+            subtitle="Emergency Triage"
+            description="発酵写真をドロップするだけ。Opus 4.7のVisionがカビ種別を判定し、GREEN / YELLOW / REDの緊急度とともに発酵化学的根拠を生成します。"
+            delay="delay-1"
+            large
+          />
+          {/* Feature 02 */}
+          <FeatureCard
+            num="02"
+            href="/batches"
+            title="バッチ監視"
+            subtitle="Async Agent"
+            description="1バッチ = 1エージェントセッション。仕込みから熟成まで、AIが毎日のアクションを非同期で提案します。"
+            delay="delay-2"
+            borderLeft
+          />
+          {/* Feature 03 */}
+          <FeatureCard
+            num="03"
+            href="/knowledge"
+            title="職人知識翻訳"
+            subtitle="Knowledge Translation"
+            description="「塩は多めに」という経験則を、浸透圧・水分活性の科学言語に翻訳。暗黙知を次世代へ継承します。"
+            delay="delay-3"
+            borderLeft
+          />
+        </div>
+      </section>
+
+      {/* ── Divider quote ────────────────────────── */}
+      <section style={{ padding: '6rem 1.5rem', textAlign: 'center' }}>
+        <div className="max-w-3xl mx-auto animate-in">
+          <div
+            style={{
+              fontFamily: 'var(--font-cormorant), Georgia, serif',
+              fontSize: 'clamp(1.4rem, 3.5vw, 2.2rem)',
+              fontWeight: 300,
+              fontStyle: 'italic',
+              color: 'hsl(35, 20%, 65%)',
+              lineHeight: 1.5,
+              marginBottom: '1.5rem',
+            }}
+          >
+            "味噌職人の20年の経験を、<br />
+            Opus 4.7 が科学として語る。"
+          </div>
+          <div
+            style={{
+              fontFamily: 'var(--font-lora), serif',
+              fontSize: '0.65rem',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              color: 'hsl(30, 68%, 45%)',
+            }}
+          >
+            Misologist — Anthropic Hackathon 2025
+          </div>
+        </div>
+      </section>
     </div>
+  );
+}
+
+interface FeatureCardProps {
+  num: string;
+  href: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  delay: string;
+  large?: boolean;
+  borderLeft?: boolean;
+}
+
+function FeatureCard({
+  num, href, title, subtitle, description, delay, large, borderLeft,
+}: FeatureCardProps) {
+  return (
+    <Link href={href} style={{ textDecoration: 'none', display: 'block' }}>
+      <article
+        className={`animate-in ${delay}`}
+        style={{
+          padding: large ? '3.5rem 2.5rem' : '3.5rem 2rem',
+          borderLeft: borderLeft ? '1px solid hsl(25, 18%, 12%)' : undefined,
+          height: '100%',
+          transition: 'background 0.25s',
+          cursor: 'pointer',
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLElement).style.background = 'hsl(25, 30%, 8%)';
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLElement).style.background = 'transparent';
+        }}
+      >
+        <div
+          style={{
+            fontFamily: 'var(--font-cormorant), Georgia, serif',
+            fontSize: '3.5rem',
+            fontWeight: 300,
+            color: 'hsl(30, 68%, 22%)',
+            lineHeight: 1,
+            marginBottom: '1.5rem',
+            letterSpacing: '-0.02em',
+          }}
+        >
+          {num}
+        </div>
+
+        <div
+          style={{
+            fontSize: '0.6rem',
+            letterSpacing: '0.16em',
+            textTransform: 'uppercase',
+            color: 'hsl(30, 68%, 50%)',
+            fontFamily: 'var(--font-lora), serif',
+            marginBottom: '0.6rem',
+          }}
+        >
+          {subtitle}
+        </div>
+
+        <h2
+          style={{
+            fontFamily: 'var(--font-cormorant), Georgia, serif',
+            fontSize: large ? '1.8rem' : '1.5rem',
+            fontWeight: 400,
+            color: 'hsl(35, 25%, 88%)',
+            lineHeight: 1.2,
+            marginBottom: '1rem',
+            letterSpacing: '0.01em',
+          }}
+        >
+          {title}
+        </h2>
+
+        <p
+          style={{
+            fontFamily: 'var(--font-lora), serif',
+            fontSize: '0.875rem',
+            lineHeight: 1.75,
+            color: 'hsl(35, 15%, 50%)',
+          }}
+        >
+          {description}
+        </p>
+
+        <div
+          style={{
+            marginTop: '2rem',
+            fontSize: '0.65rem',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color: 'hsl(30, 55%, 45%)',
+            fontFamily: 'var(--font-lora), serif',
+          }}
+        >
+          探索する →
+        </div>
+      </article>
+    </Link>
   );
 }

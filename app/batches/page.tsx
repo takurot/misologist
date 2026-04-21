@@ -4,6 +4,12 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { Batch } from '@/types';
 
+const statusConfig = {
+  active: { label: '仕込み中', color: 'hsl(145, 55%, 45%)', bg: 'hsl(145, 40%, 8%)' },
+  completed: { label: '完成', color: 'hsl(210, 55%, 55%)', bg: 'hsl(210, 40%, 8%)' },
+  failed: { label: '失敗', color: 'hsl(4, 65%, 50%)', bg: 'hsl(4, 40%, 8%)' },
+};
+
 export default function BatchesPage() {
   const [batches, setBatches] = useState<Batch[]>([]);
   const [loading, setLoading] = useState(true);
@@ -11,84 +17,152 @@ export default function BatchesPage() {
   useEffect(() => {
     fetch('/api/batches')
       .then((r) => r.json())
-      .then((json) => {
-        if (json.success) setBatches(json.data);
-      })
+      .then((json) => { if (json.success) setBatches(json.data); })
       .finally(() => setLoading(false));
   }, []);
 
-  const statusLabel = {
-    active: '仕込み中',
-    completed: '完成',
-    failed: '失敗',
-  };
-
-  const statusColor = {
-    active: 'text-green-700 bg-green-100',
-    completed: 'text-blue-700 bg-blue-100',
-    failed: 'text-red-700 bg-red-100',
-  };
-
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
+    <div style={{ maxWidth: '52rem', margin: '0 auto', padding: '3rem 1.5rem' }}>
+      {/* Header */}
+      <div
+        className="animate-in"
+        style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '2.5rem' }}
+      >
         <div>
-          <h1 className="text-2xl font-bold">バッチ管理</h1>
-          <p className="text-muted-foreground">味噌バッチの長期管理とAIエージェント監視</p>
+          <div className="section-label" style={{ marginBottom: '0.6rem' }}>Batch Monitor</div>
+          <h1
+            style={{
+              fontFamily: 'var(--font-cormorant), Georgia, serif',
+              fontSize: '2.8rem',
+              fontWeight: 300,
+              color: 'hsl(35, 25%, 88%)',
+              lineHeight: 1.1,
+            }}
+          >
+            バッチ管理
+          </h1>
         </div>
-        <Link
-          href="/batches/new"
-          className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
-        >
-          新規バッチ
+        <Link href="/batches/new">
+          <span className="btn-outline">新規バッチ</span>
         </Link>
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-muted-foreground">読み込み中...</div>
+        <div
+          style={{
+            padding: '4rem 0',
+            textAlign: 'center',
+            fontFamily: 'var(--font-lora), serif',
+            fontSize: '0.875rem',
+            color: 'hsl(35, 15%, 42%)',
+            letterSpacing: '0.08em',
+          }}
+        >
+          読み込み中...
+        </div>
       ) : batches.length === 0 ? (
-        <div className="text-center py-12 border rounded-lg bg-card">
-          <p className="text-muted-foreground mb-4">まだバッチがありません</p>
-          <Link href="/batches/new" className="text-primary hover:underline text-sm">
-            最初のバッチを作成する
+        <div
+          style={{
+            padding: '4rem 2rem',
+            textAlign: 'center',
+            border: '1px solid hsl(25, 18%, 14%)',
+            background: 'hsl(25, 30%, 7%)',
+          }}
+        >
+          <p
+            style={{
+              fontFamily: 'var(--font-cormorant), Georgia, serif',
+              fontSize: '1.5rem',
+              fontWeight: 300,
+              color: 'hsl(35, 15%, 45%)',
+              marginBottom: '1.25rem',
+            }}
+          >
+            まだバッチがありません
+          </p>
+          <Link href="/batches/new">
+            <span className="btn-primary">最初のバッチを仕込む</span>
           </Link>
         </div>
       ) : (
-        <div className="grid gap-4">
-          {batches.map((batch) => {
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {batches.map((batch, idx) => {
             const days = Math.floor(
               (Date.now() - new Date(batch.started_at).getTime()) / (1000 * 60 * 60 * 24)
             );
+            const cfg = statusConfig[batch.status];
+
             return (
-              <Link key={batch.id} href={`/batches/${batch.id}`}>
-                <div className="border rounded-lg p-4 bg-card hover:border-primary transition-colors">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h2 className="font-semibold">{batch.name}</h2>
-                      <p className="text-sm text-muted-foreground">
-                        仕込み開始: {new Date(batch.started_at).toLocaleDateString('ja-JP')} ({days}日経過)
-                      </p>
-                    </div>
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full font-medium ${statusColor[batch.status]}`}
+              <Link key={batch.id} href={`/batches/${batch.id}`} style={{ textDecoration: 'none' }}>
+                <article
+                  className={`animate-in delay-${Math.min(idx + 1, 5) as 1 | 2 | 3 | 4 | 5}`}
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '3fr 1fr',
+                    alignItems: 'center',
+                    gap: '1rem',
+                    padding: '1.5rem 0',
+                    borderBottom: '1px solid hsl(25, 18%, 13%)',
+                    transition: 'background 0.2s',
+                    cursor: 'pointer',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = 'hsl(25, 30%, 8%)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = 'transparent';
+                  }}
+                >
+                  <div>
+                    <h2
+                      style={{
+                        fontFamily: 'var(--font-cormorant), Georgia, serif',
+                        fontSize: '1.4rem',
+                        fontWeight: 400,
+                        color: 'hsl(35, 25%, 85%)',
+                        lineHeight: 1.2,
+                        marginBottom: '0.35rem',
+                      }}
                     >
-                      {statusLabel[batch.status]}
+                      {batch.name}
+                    </h2>
+                    <div
+                      style={{
+                        display: 'flex',
+                        gap: '1.25rem',
+                        fontFamily: 'var(--font-lora), serif',
+                        fontSize: '0.78rem',
+                        color: 'hsl(35, 15%, 45%)',
+                      }}
+                    >
+                      <span>
+                        {new Date(batch.started_at).toLocaleDateString('ja-JP')} 仕込み
+                      </span>
+                      <span style={{ color: 'hsl(30, 68%, 42%)' }}>{days}日経過</span>
+                      {batch.recipe_json?.soybeanVariety && (
+                        <span>{batch.recipe_json.soybeanVariety}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div style={{ textAlign: 'right' }}>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        fontFamily: 'var(--font-lora), serif',
+                        fontSize: '0.65rem',
+                        letterSpacing: '0.12em',
+                        textTransform: 'uppercase',
+                        color: cfg.color,
+                        background: cfg.bg,
+                        padding: '0.3rem 0.7rem',
+                        border: `1px solid ${cfg.color}40`,
+                      }}
+                    >
+                      {cfg.label}
                     </span>
                   </div>
-                  {batch.recipe_json && (
-                    <div className="mt-2 flex gap-3 text-xs text-muted-foreground">
-                      {batch.recipe_json.soybeanVariety && (
-                        <span>大豆: {batch.recipe_json.soybeanVariety}</span>
-                      )}
-                      {batch.recipe_json.kojRatio && (
-                        <span>麹歩合: {batch.recipe_json.kojRatio}%</span>
-                      )}
-                      {batch.recipe_json.saltRatio && (
-                        <span>塩分: {batch.recipe_json.saltRatio}%</span>
-                      )}
-                    </div>
-                  )}
-                </div>
+                </article>
               </Link>
             );
           })}
