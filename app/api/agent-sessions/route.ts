@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { anthropic, MODEL } from '@/lib/anthropic';
+import { getAnthropicClient, MODEL } from '@/lib/anthropic';
 import { buildBatchWatcherPrompt } from '@/lib/prompts/diagnosis';
 import type { AgentSession, AgentState } from '@/types';
 
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       recentLogs,
     });
 
-    const response = await anthropic.messages.create({
+    const response = await getAnthropicClient().messages.create({
       model: MODEL,
       max_tokens: 2048,
       thinking: { type: 'adaptive' },
