@@ -5,9 +5,10 @@ import { useDropzone } from 'react-dropzone';
 
 interface PhotoUploadProps {
   onImageSelect: (base64: string, mediaType: 'image/jpeg' | 'image/png' | 'image/webp') => void;
+  onClear?: () => void;
 }
 
-export function PhotoUpload({ onImageSelect }: PhotoUploadProps) {
+export function PhotoUpload({ onImageSelect, onClear }: PhotoUploadProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -53,7 +54,11 @@ export function PhotoUpload({ onImageSelect }: PhotoUploadProps) {
           overflow: 'hidden',
         }}
       >
-        <input {...getInputProps()} />
+        <input
+          {...getInputProps()}
+          aria-label="味噌の写真をアップロード"
+          aria-describedby="photo-upload-hint"
+        />
 
         {preview ? (
           <img
@@ -118,11 +123,12 @@ export function PhotoUpload({ onImageSelect }: PhotoUploadProps) {
             </div>
 
             <div
+              id="photo-upload-hint"
               style={{
                 fontFamily: 'var(--font-lora), serif',
                 fontSize: '0.65rem',
                 letterSpacing: '0.12em',
-                color: 'hsl(35, 12%, 32%)',
+                color: 'hsl(35, 15%, 48%)',
               }}
             >
               JPEG · PNG · WebP
@@ -134,7 +140,7 @@ export function PhotoUpload({ onImageSelect }: PhotoUploadProps) {
       {preview && (
         <button
           type="button"
-          onClick={() => setPreview(null)}
+          onClick={() => { setPreview(null); onClear?.(); }}
           style={{
             marginTop: '0.75rem',
             fontFamily: 'var(--font-lora), serif',

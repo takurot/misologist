@@ -3,26 +3,24 @@
  */
 import { NextRequest } from 'next/server';
 
-jest.mock('@/lib/anthropic', () => ({
-  anthropic: {
-    messages: {
-      create: jest.fn().mockResolvedValue({
-        content: [
-          {
-            type: 'text',
-            text: JSON.stringify({
-              urgencyLevel: 'GREEN',
-              moldType: '産膜酵母（白カビ）',
-              moldReason: '表面に産膜酵母が発生しました',
-              fermentationChemistry: 'アミノ酸分解が進行中です',
-              immediateActions: ['表面のカビを取り除く'],
-              preventionTips: ['重石を増やす'],
-            }),
-          },
-        ],
+const mockCreate = jest.fn().mockResolvedValue({
+  content: [
+    {
+      type: 'text',
+      text: JSON.stringify({
+        urgencyLevel: 'GREEN',
+        moldType: '産膜酵母（白カビ）',
+        moldReason: '表面に産膜酵母が発生しました',
+        fermentationChemistry: 'アミノ酸分解が進行中です',
+        immediateActions: ['表面のカビを取り除く'],
+        preventionTips: ['重石を増やす'],
       }),
     },
-  },
+  ],
+});
+
+jest.mock('@/lib/anthropic', () => ({
+  getAnthropicClient: () => ({ messages: { create: mockCreate } }),
   MODEL: 'claude-opus-4-7',
 }));
 

@@ -100,11 +100,14 @@ export default function KnowledgePage() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="例: 塩は多めに入れると腐らない"
             rows={5}
+            onFocus={(e) => { e.target.style.outline = '2px solid hsl(30, 68%, 50%)'; }}
+            onBlur={(e) => { e.target.style.outline = '2px solid transparent'; }}
             style={{
               width: '100%',
               background: 'transparent',
               border: 'none',
-              outline: 'none',
+              outline: '2px solid transparent',
+              outlineOffset: '4px',
               fontFamily: 'var(--font-cormorant), Georgia, serif',
               fontSize: '1.4rem',
               fontStyle: 'italic',

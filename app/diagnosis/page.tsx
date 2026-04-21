@@ -21,6 +21,12 @@ export default function DiagnosisPage() {
     setError(null);
   };
 
+  const handleClear = () => {
+    setImageBase64(null);
+    setResult(null);
+    setError(null);
+  };
+
   const handleDiagnose = async () => {
     if (!imageBase64) return;
     setLoading(true);
@@ -77,7 +83,7 @@ export default function DiagnosisPage() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
         <div className="animate-in delay-1">
-          <PhotoUpload onImageSelect={handleImageSelect} />
+          <PhotoUpload onImageSelect={handleImageSelect} onClear={handleClear} />
         </div>
 
         <div className="animate-in delay-2">

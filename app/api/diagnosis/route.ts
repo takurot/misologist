@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { anthropic, MODEL } from '@/lib/anthropic';
+import { getAnthropicClient, MODEL } from '@/lib/anthropic';
 import { buildDiagnosisPrompt } from '@/lib/prompts/diagnosis';
 import type { DiagnosisRequest, DiagnosisResult } from '@/types';
 
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       saltRatio: body.saltRatio,
     });
 
-    const response = await anthropic.messages.create({
+    const response = await getAnthropicClient().messages.create({
       model: MODEL,
       max_tokens: 2048,
       thinking: { type: 'adaptive' },

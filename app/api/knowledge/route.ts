@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { anthropic, MODEL } from '@/lib/anthropic';
+import { getAnthropicClient, MODEL } from '@/lib/anthropic';
 import { buildKnowledgeTranslationPrompt } from '@/lib/prompts/diagnosis';
 import type { KnowledgeTranslationResult } from '@/types';
 
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     const prompt = buildKnowledgeTranslationPrompt(knowledge.trim());
 
-    const response = await anthropic.messages.create({
+    const response = await getAnthropicClient().messages.create({
       model: MODEL,
       max_tokens: 2048,
       thinking: { type: 'adaptive' },

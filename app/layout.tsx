@@ -115,7 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               fontSize: '0.65rem',
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
-              color: 'hsl(35, 15%, 38%)',
+              color: 'hsl(35, 15%, 52%)',
               fontFamily: 'var(--font-lora), serif',
             }}
           >

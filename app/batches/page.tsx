@@ -13,11 +13,16 @@ const statusConfig = {
 export default function BatchesPage() {
   const [batches, setBatches] = useState<Batch[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/batches')
       .then((r) => r.json())
-      .then((json) => { if (json.success) setBatches(json.data); })
+      .then((json) => {
+        if (json.success) setBatches(json.data);
+        else setFetchError(json.error ?? 'バッチ一覧の取得に失敗しました');
+      })
+      .catch(() => setFetchError('ネットワークエラーが発生しました'))
       .finally(() => setLoading(false));
   }, []);
 
@@ -59,6 +64,19 @@ export default function BatchesPage() {
           }}
         >
           読み込み中...
+        </div>
+      ) : fetchError ? (
+        <div
+          style={{
+            padding: '2rem',
+            background: 'hsl(4, 50%, 8%)',
+            border: '1px solid hsl(4, 50%, 22%)',
+            fontFamily: 'var(--font-lora), serif',
+            fontSize: '0.875rem',
+            color: 'hsl(4, 65%, 58%)',
+          }}
+        >
+          {fetchError}
         </div>
       ) : batches.length === 0 ? (
         <div

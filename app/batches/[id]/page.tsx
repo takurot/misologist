@@ -31,8 +31,9 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
       .then((r) => r.json())
       .then((json) => {
         if (json.success) setBatch(json.data);
-        else setError(json.error);
+        else setError(json.error ?? 'バッチの取得に失敗しました');
       })
+      .catch(() => setError('ネットワークエラーが発生しました'))
       .finally(() => setLoading(false));
   }, [params.id]);
 

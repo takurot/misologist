@@ -8,7 +8,11 @@ export default function NewBatchPage() {
   const router = useRouter();
   const [form, setForm] = useState({
     name: '',
-    started_at: new Date().toISOString().split('T')[0],
+    started_at: (() => {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      return now.toISOString().slice(0, 10);
+    })(),
     soybeanVariety: '',
     kojRatio: '',
     saltRatio: '',

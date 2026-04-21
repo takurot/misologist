@@ -3,25 +3,23 @@
  */
 import { NextRequest } from 'next/server';
 
-jest.mock('@/lib/anthropic', () => ({
-  anthropic: {
-    messages: {
-      create: jest.fn().mockResolvedValue({
-        content: [
-          {
-            type: 'text',
-            text: JSON.stringify({
-              originalKnowledge: '塩は多めに入れると腐らない',
-              scientificExplanation: '塩分濃度が高いと水分活性が下がり微生物の繁殖を抑制します',
-              chemistry: 'aw = 1 - Xsolute (ラウールの法則)',
-              practicalAdvice: ['塩分を12%以上に保つ'],
-              references: ['水分活性', '浸透圧'],
-            }),
-          },
-        ],
+const mockCreate = jest.fn().mockResolvedValue({
+  content: [
+    {
+      type: 'text',
+      text: JSON.stringify({
+        originalKnowledge: '塩は多めに入れると腐らない',
+        scientificExplanation: '塩分濃度が高いと水分活性が下がり微生物の繁殖を抑制します',
+        chemistry: 'aw = 1 - Xsolute (ラウールの法則)',
+        practicalAdvice: ['塩分を12%以上に保つ'],
+        references: ['水分活性', '浸透圧'],
       }),
     },
-  },
+  ],
+});
+
+jest.mock('@/lib/anthropic', () => ({
+  getAnthropicClient: () => ({ messages: { create: mockCreate } }),
   MODEL: 'claude-opus-4-7',
 }));
 
