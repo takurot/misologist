@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getAnthropicClient, MODEL } from '@/lib/anthropic';
+import { getSupabaseConfigError } from '@/lib/env';
 import { buildBatchWatcherPrompt } from '@/lib/prompts/diagnosis';
 import type { AgentSession, AgentState } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
+    const configError = getSupabaseConfigError();
+    if (configError) {
+      return NextResponse.json({ success: false, error: configError }, { status: 503 });
+    }
+
     const { batchId } = await request.json();
 
     if (!batchId) {

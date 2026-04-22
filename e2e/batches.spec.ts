@@ -18,6 +18,11 @@ test.describe('Batches Page', () => {
     await expect(page).toHaveURL(/\/batches\/new/);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   });
+
+  test('shows a clear configuration error when Supabase is not configured', async ({ page }) => {
+    await page.goto('/batches');
+    await expect(page.getByText(/Supabase is not configured/i)).toBeVisible({ timeout: 15000 });
+  });
 });
 
 test.describe('New Batch Form', () => {
@@ -47,5 +52,14 @@ test.describe('New Batch Form', () => {
     await page.goto('/batches/new');
     await page.getByRole('link', { name: /キャンセル/ }).click();
     await expect(page).toHaveURL(/\/batches$/);
+  });
+
+  test('submit shows a clear configuration error when Supabase is not configured', async ({ page }) => {
+    await page.goto('/batches/new');
+    await page.getByLabel(/バッチ名/).fill('E2E Batch');
+    await page.getByLabel(/仕込み開始日/).fill('2026-04-20');
+    await page.getByRole('button', { name: /バッチを仕込む/ }).click();
+
+    await expect(page.getByText(/Supabase is not configured/i)).toBeVisible({ timeout: 15000 });
   });
 });

@@ -177,8 +177,8 @@ export default function HomePage() {
               marginBottom: '1.5rem',
             }}
           >
-            "味噌職人の20年の経験を、<br />
-            Opus 4.7 が科学として語る。"
+            &ldquo;味噌職人の20年の経験を、<br />
+            Opus 4.7 が科学として語る。&rdquo;
           </div>
           <div
             style={{

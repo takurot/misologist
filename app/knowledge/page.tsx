@@ -161,7 +161,7 @@ export default function KnowledgePage() {
                   el.style.borderColor = 'hsl(25, 18%, 18%)';
                 }}
               >
-                "{ex}"
+                &ldquo;{ex}&rdquo;
               </button>
             ))}
           </div>
