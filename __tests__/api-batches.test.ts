@@ -20,7 +20,16 @@ describe('batches API configuration guard', () => {
   });
 
   afterAll(() => {
-    process.env = originalEnv;
+    if (originalEnv.NEXT_PUBLIC_SUPABASE_URL === undefined) {
+      delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+    } else {
+      process.env.NEXT_PUBLIC_SUPABASE_URL = originalEnv.NEXT_PUBLIC_SUPABASE_URL;
+    }
+    if (originalEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY === undefined) {
+      delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    } else {
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = originalEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    }
   });
 
   it('returns 503 with a clear message when Supabase is not configured for GET', async () => {

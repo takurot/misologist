@@ -25,13 +25,13 @@ export async function GET(
     }
 
     const { agent_sessions, ...batchData } = data;
-    const agentSession = Array.isArray(agent_sessions) ? agent_sessions[0] ?? null : null;
+    const agentSession = Array.isArray(agent_sessions) ? (agent_sessions[0] ?? null) : null;
 
     return NextResponse.json({
       success: true,
       data: {
         ...batchData,
-        agent_session: agentSession ?? undefined,
+        agent_session: agentSession,
       },
     });
   } catch (error) {
