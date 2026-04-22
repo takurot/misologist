@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
 
 interface PhotoUploadProps {
@@ -61,10 +62,13 @@ export function PhotoUpload({ onImageSelect, onClear }: PhotoUploadProps) {
         />
 
         {preview ? (
-          <img
+          <Image
             src={preview}
             alt="アップロードした味噌の写真"
-            style={{ display: 'block', maxHeight: '18rem', margin: '0 auto', objectFit: 'contain' }}
+            width={1024}
+            height={1024}
+            unoptimized
+            style={{ display: 'block', maxHeight: '18rem', margin: '0 auto', objectFit: 'contain', width: 'auto' }}
           />
         ) : (
           <>
