@@ -20,6 +20,7 @@ const mockCreate = jest.fn().mockResolvedValue({
 });
 
 jest.mock('@/lib/anthropic', () => ({
+  ...jest.requireActual('@/lib/anthropic'),
   getAnthropicClient: () => ({ messages: { create: mockCreate } }),
   MODEL: 'claude-opus-4-7',
 }));

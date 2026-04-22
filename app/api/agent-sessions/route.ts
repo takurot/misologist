@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { getAnthropicClient, MODEL } from '@/lib/anthropic';
+import { getAnthropicClient, MODEL, parseJsonResponse } from '@/lib/anthropic';
 import { getSupabaseConfigError } from '@/lib/env';
 import { buildBatchWatcherPrompt } from '@/lib/prompts/diagnosis';
 import type { AgentSession, AgentState } from '@/types';
@@ -68,14 +68,14 @@ export async function POST(request: NextRequest) {
       throw new Error('AIからのレスポンスが空です');
     }
 
-    const agentResult = JSON.parse(textContent.text.trim());
+    const agentResult = parseJsonResponse(textContent.text) as Record<string, unknown>;
 
     const agentState: AgentState = {
-      fermentationStage: agentResult.fermentationStage,
-      lastAssessment: agentResult.assessment,
-      actions: agentResult.actions ?? [],
+      fermentationStage: agentResult.fermentationStage as string | undefined,
+      lastAssessment: agentResult.assessment as string | undefined,
+      actions: (agentResult.actions as AgentState['actions']) ?? [],
       daysElapsed,
-      completionDate: agentResult.completionDate,
+      completionDate: agentResult.completionDate as string | undefined,
     };
 
     const { data: existing } = await supabase
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
           agent_state: agentState,
           last_action_at: new Date().toISOString(),
           next_action_at: agentResult.nextCheckDate
-            ? new Date(agentResult.nextCheckDate).toISOString()
+            ? new Date(agentResult.nextCheckDate as string).toISOString()
             : null,
         })
         .eq('id', existing.id)
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
           agent_state: agentState,
           last_action_at: new Date().toISOString(),
           next_action_at: agentResult.nextCheckDate
-            ? new Date(agentResult.nextCheckDate).toISOString()
+            ? new Date(agentResult.nextCheckDate as string).toISOString()
             : null,
         })
         .select()
