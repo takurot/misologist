@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAnthropicClient, MODEL } from '@/lib/anthropic';
+import { getAnthropicClient, MODEL, parseJsonResponse } from '@/lib/anthropic';
 import { buildDiagnosisPrompt } from '@/lib/prompts/diagnosis';
 import type { DiagnosisRequest, DiagnosisResult } from '@/types';
 
@@ -53,8 +53,7 @@ export async function POST(request: NextRequest) {
       throw new Error('AIからのレスポンスが空です');
     }
 
-    const jsonText = textContent.text.trim();
-    const result: DiagnosisResult = JSON.parse(jsonText);
+    const result = parseJsonResponse(textContent.text) as DiagnosisResult;
 
     return NextResponse.json({ success: true, data: result });
   } catch (error) {

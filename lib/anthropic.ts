@@ -13,3 +13,8 @@ export function getAnthropicClient(): Anthropic {
   }
   return _client;
 }
+
+export function parseJsonResponse(text: string): unknown {
+  const stripped = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+  return JSON.parse(stripped);
+}

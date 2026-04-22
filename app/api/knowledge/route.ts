@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAnthropicClient, MODEL } from '@/lib/anthropic';
+import { getAnthropicClient, MODEL, parseJsonResponse } from '@/lib/anthropic';
 import { buildKnowledgeTranslationPrompt } from '@/lib/prompts/diagnosis';
 import type { KnowledgeTranslationResult } from '@/types';
 
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       throw new Error('AIからのレスポンスが空です');
     }
 
-    const result: KnowledgeTranslationResult = JSON.parse(textContent.text.trim());
+    const result = parseJsonResponse(textContent.text) as KnowledgeTranslationResult;
 
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
