@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getAnthropicClient, MODEL, parseJsonResponse } from '@/lib/anthropic';
 import { getSupabaseConfigError } from '@/lib/env';
+import { resolveLocale } from '@/lib/i18n';
 import { buildBatchWatcherPrompt } from '@/lib/prompts/diagnosis';
 import type { AgentSession, AgentState } from '@/types';
 
@@ -12,11 +13,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: configError }, { status: 503 });
     }
 
-    const { batchId } = await request.json();
+    const { batchId, locale: localeValue } = await request.json();
+    const locale = resolveLocale(localeValue);
 
     if (!batchId) {
       return NextResponse.json(
-        { success: false, error: 'バッチIDが必要です' },
+        { success: false, error: locale === 'ja' ? 'バッチIDが必要です' : 'Batch ID is required.' },
         { status: 400 }
       );
     }
@@ -31,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     if (batchError || !batch) {
       return NextResponse.json(
-        { success: false, error: 'バッチが見つかりません' },
+        { success: false, error: locale === 'ja' ? 'バッチが見つかりません' : 'Batch not found.' },
         { status: 404 }
       );
     }
@@ -49,6 +51,7 @@ export async function POST(request: NextRequest) {
     }));
 
     const prompt = buildBatchWatcherPrompt({
+      locale,
       batchName: batch.name,
       startDate: batch.started_at,
       daysElapsed,
@@ -65,7 +68,7 @@ export async function POST(request: NextRequest) {
 
     const textContent = response.content.find((c) => c.type === 'text');
     if (!textContent || textContent.type !== 'text') {
-      throw new Error('AIからのレスポンスが空です');
+      throw new Error(locale === 'ja' ? 'AIからのレスポンスが空です' : 'The AI response was empty.');
     }
 
     const agentResult = parseJsonResponse(textContent.text) as Record<string, unknown>;
@@ -119,7 +122,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, data: session });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'エージェントセッションの作成に失敗しました';
+    const message = error instanceof Error ? error.message : 'The agent session could not be created.';
     return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

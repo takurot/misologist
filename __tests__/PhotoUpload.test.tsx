@@ -4,7 +4,7 @@ import { PhotoUpload } from '@/components/diagnosis/PhotoUpload';
 describe('PhotoUpload', () => {
   it('renders upload prompt text by default', () => {
     render(<PhotoUpload onImageSelect={jest.fn()} />);
-    expect(screen.getByText(/ドラッグ&ドロップ/)).toBeInTheDocument();
+    expect(screen.getByText(/Drag and drop a photo/)).toBeInTheDocument();
   });
 
   it('renders format hint', () => {
@@ -19,6 +19,6 @@ describe('PhotoUpload', () => {
 
   it('does not show change button before image is selected', () => {
     render(<PhotoUpload onImageSelect={jest.fn()} />);
-    expect(screen.queryByText(/写真を変更/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Change photo/)).not.toBeInTheDocument();
   });
 });

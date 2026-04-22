@@ -1,90 +1,82 @@
-# Misologist — 発酵診断・職人知識継承エンジン
+# Misologist — Fermentation Diagnosis & Craft Knowledge Engine
 
-> 「味噌職人の20年の経験を、Opus 4.7 が科学として語る」
+Japanese README: [README.ja.md](README.ja.md)
+
+> "Twenty years of miso craftsmanship, explained as science by Opus 4.7."
 
 **Anthropic Hackathon 2025 — Built with Opus 4.7**
 
----
+## Overview
 
-## 概要
+Misologist is an AI-assisted platform for home miso makers, small breweries, and fermentation researchers. It aims to prevent irreversible once-a-year batch failures while preserving tacit craft knowledge as explicit fermentation science.
 
-Misologist は、家庭味噌仕込み愛好家・小規模味噌蔵・発酵研究者向けの AI エージェントプラットフォームです。年1回しかチャンスのない味噌仕込みの失敗を防ぎ、職人の暗黙知を科学として継承します。
+### Why Opus 4.7 matters here
 
-### なぜ Opus 4.7 でなければならないか
-
-| 他のモデルで代替できないこと | Opus 4.7 の能力 |
+| What smaller models struggle to replace | What Opus 4.7 contributes |
 |---|---|
-| 複数バッチ・複数月の発酵ログ全体を参照した比較推論 | 長文コンテキスト統合 |
-| 「寒仕込みは旨味が出る」→ メイラード反応・アミノ酸生成への変換 | 職人暗黙知の科学翻訳 |
-| 「このカビは除去すれば問題ない」判断の発酵化学的プロセス逐次説明 | 不確実性の定量化と根拠生成 |
+| Comparing multi-batch, multi-month fermentation logs | Long-context synthesis |
+| Translating sayings like "winter brewing tastes better" into chemistry | Scientific translation of tacit craft knowledge |
+| Explaining why a mold is acceptable or dangerous, step by step | Uncertainty handling with grounded rationale |
 
----
+## Core Features
 
-## 機能
+### Feature 1 — Emergency Fermentation Diagnosis
 
-### Feature 1 — 緊急発酵診断
+Upload a fermentation photo and Opus 4.7 diagnoses the batch immediately.
 
-発酵写真をアップロードすると Opus 4.7 が即座に診断します。
+- **Mold identification:** Distinguishes likely white film yeast, blue mold, red yeast, and related cases
+- **Urgency levels:** `GREEN`, `YELLOW`, or `RED`
+- **Fermentation chemistry rationale:** Explains why the batch is or is not at risk
+- **Immediate actions:** Provides concrete remediation and prevention steps
+- **Cross-batch comparison:** Supports longitudinal reasoning against past batches
 
-- **カビ種別判定:** 白カビ（産膜酵母/良性）/ 青カビ（ペニシリウム/危険）/ 赤カビ（ロドトルラ/要確認）
-- **緊急度レベル:** GREEN / YELLOW / RED
-- **発酵化学的根拠:** なぜそのカビが問題/問題でないかのメカニズム解説
-- **具体的アクション:** 除去手順・消毒方法・再発防止策（ステップバイステップ）
-- **過去バッチとの比較:** 「3ヶ月前の同条件バッチと比較してカビ発生が2週間早い」等の縦断推論
+### Feature 2 — Batch Monitoring Agent
 
-### Feature 2 — バッチ監視エージェント（Managed Agents）
+From the day a batch starts to the day it matures, the system monitors asynchronously in the background.
 
-仕込んだ日から完成まで、バックグラウンドで非同期常時監視。
+- One batch maps to one agent session
+- The agent proposes today's action on a recurring basis
+- Estimated completion timing is recalculated as conditions evolve
 
-- バッチ1つ = 1エージェントセッション（最長12ヶ月の長期タスク）
-- 毎日定刻に「今日のアクション」を生成（天地返し推奨・天候対応・塩嘗め時期）
-- 熟成速度から完成日を動的に再計算・更新
+### Feature 3 — Craft Knowledge Translation
 
-### Feature 3 — 職人知識翻訳エンジン
+Turns workshop heuristics into the language of fermentation chemistry.
 
-職人の経験則を Opus 4.7 が発酵化学に翻訳します。
+- **Translation mode:** Explains traditional rules of thumb with enzyme, amino acid, and reaction-level reasoning
+- **Reverse design mode:** Works backward from a target flavor profile to recipe and maturation parameters
 
-- **翻訳モード:** 「寒仕込みにすると旨味が強くなる気がする」→ プロテアーゼ活性・グルタミン酸生成の科学的説明
-- **逆引きモード:** 「酸味を抑えて甘みを強くしたい」→ 麹歩合・仕込み温度・熟成期間の最適パラメータを逆算
+## Product Pivot
 
----
+This project started as a one-shot photo diagnosis tool and was redesigned around three core issues.
 
-## ピボットの記録
-
-最初のアイデア（単発写真診断ツール）から、以下3点を根本的に修正しました。
-
-| 修正前の問題 | 根拠 | 修正後の設計 |
+| Original issue | Why it was weak | Current direction |
 |---|---|---|
-| 単発写真診断 | Vision診断は小型モデルでも代替可能。Opus 4.7の必然性なし | 複数バッチ・複数年の長文ログを統合した縦断推論 |
-| 発酵スコア0-100 | 計算根拠が曖昧 | Opus 4.7が発酵化学的根拠付きで「なぜそのスコアか」を説明生成 |
-| Managed Agentsを同期タスクに使用 | 短時間タスクではMCAの強みを無駄にする | バッチ監視エージェントとして非同期常時動作 |
+| Single-photo diagnosis only | Vision-only analysis is not enough to justify Opus 4.7 | Longitudinal reasoning across batches and time |
+| A vague 0-100 fermentation score | Hard to defend the scoring logic | Explanations grounded in fermentation chemistry |
+| Using managed agents for short synchronous work | Wastes the strengths of long-running async agents | Persistent batch watcher for longer workflows |
 
----
+## Tech Stack
 
-## 技術スタック
-
-| レイヤー | コンポーネント | 役割 |
+| Layer | Component | Responsibility |
 |---|---|---|
-| フロントエンド | Next.js 14 App Router + shadcn/ui | 写真アップロード・診断結果表示・バッチダッシュボード |
-| AI エンジン | Claude Opus 4.7 | Vision診断・発酵推論・知識翻訳・根拠生成 |
-| エージェント基盤 | Claude Managed Agents | 非同期バッチ監視・長期セッション管理 |
-| データ | Supabase (PostgreSQL) | バッチログ・診断履歴・写真メタデータ |
-| ストレージ | Supabase Storage | 発酵写真のバイナリ保存 |
-| デプロイ | Vercel | サーバーレス実行環境 |
+| Frontend | Next.js 14 App Router | Upload flows, results UI, batch dashboard |
+| AI Engine | Claude Opus 4.7 | Vision diagnosis, fermentation reasoning, knowledge translation |
+| Agent Layer | Claude Managed Agents | Async batch monitoring and long-lived sessions |
+| Data | Supabase (PostgreSQL) | Batch logs, diagnosis history, metadata |
+| Storage | Supabase Storage | Fermentation photo storage |
+| Deployment | Vercel | Serverless runtime |
 
----
+## Setup
 
-## セットアップ
-
-### 前提条件
+### Prerequisites
 
 - Node.js 18+
-- Supabase アカウント
-- Anthropic API キー（Opus 4.7 アクセス権）
+- A Supabase account
+- An Anthropic API key with Opus 4.7 access
 
-### 環境変数
+### Environment Variables
 
-`.env.local` を作成:
+Create `.env.local`:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
@@ -93,35 +85,27 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ANTHROPIC_API_KEY=your_anthropic_api_key
 ```
 
-### Supabase スキーマ初期化
+### Initialize Supabase
 
-Supabase SQL Editor で `docs/schema.sql` を実行してください。
+Run `docs/schema.sql` in the Supabase SQL Editor.
 
-### インストール・起動
+### Install and Run
 
 ```bash
 npm install
 npm run dev
 ```
 
-`http://localhost:3000` で起動します。
+The app starts at `http://localhost:3000`.
 
----
-
-## データスキーマ
+## Data Schema
 
 ```sql
-batches:       id / name / started_at / recipe_json / status
-logs:          id / batch_id / captured_at / photo_url / env_json / diagnosis_json / action_json
+batches:        id / name / started_at / recipe_json / status
+logs:           id / batch_id / captured_at / photo_url / env_json / diagnosis_json / action_json
 agent_sessions: id / batch_id / agent_state / last_action_at / next_action_at
 ```
 
----
-
-## ライセンス
+## License
 
 MIT License — see [LICENSE](LICENSE)
-
----
-
-*Misologist — Built with Opus 4.7 | Anthropic Hackathon 2025*

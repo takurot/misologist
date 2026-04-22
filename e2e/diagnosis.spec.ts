@@ -18,7 +18,7 @@ test.describe('Diagnosis Page', () => {
 
   test('analyze button is disabled before photo upload', async ({ page }) => {
     await page.goto('/diagnosis');
-    const analyzeBtn = page.getByRole('button', { name: /発酵状態を解析/ });
+    const analyzeBtn = page.getByRole('button', { name: /Diagnose batch/ });
     // Button should be absent or disabled without an image
     const count = await analyzeBtn.count();
     if (count > 0) {
@@ -28,8 +28,7 @@ test.describe('Diagnosis Page', () => {
 
   test('metadata form fields render', async ({ page }) => {
     await page.goto('/diagnosis');
-    // Metadata fields should be visible
-    await expect(page.getByLabel(/仕込み開始日/)).toBeVisible();
-    await expect(page.getByLabel(/保存温度/)).toBeVisible();
+    await expect(page.getByLabel(/Batch start date/)).toBeVisible();
+    await expect(page.getByLabel(/Storage temperature/)).toBeVisible();
   });
 });

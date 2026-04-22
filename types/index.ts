@@ -1,3 +1,5 @@
+import type { Locale } from '@/lib/i18n';
+
 export type UrgencyLevel = 'GREEN' | 'YELLOW' | 'RED';
 
 export interface DiagnosisResult {
@@ -101,6 +103,7 @@ export interface ReverseEngineeringResult {
 export interface DiagnosisRequest {
   imageBase64: string;
   mediaType: 'image/jpeg' | 'image/png' | 'image/webp';
+  locale?: Locale;
   startDate?: string;
   temperature?: number;
   storageLocation?: string;

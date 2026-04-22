@@ -2,15 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useLocale } from '@/components/LocaleProvider';
+import {
+  formatDate,
+  formatDaysElapsed,
+  formatObservationCount,
+} from '@/lib/i18n';
 import type { BatchWithLogs, DailyAction } from '@/types';
-
-const actionTypeLabel: Record<DailyAction['type'], string> = {
-  tenchi_gaeshi: '天地返し',
-  weather_response: '天候対応',
-  salt_tasting: '塩梅確認',
-  observation: '観察',
-  warning: '警告',
-};
 
 const priorityStyle = {
   high: { accent: 'hsl(4, 65%, 50%)', bg: 'hsl(4, 50%, 8%)' },
@@ -18,9 +16,8 @@ const priorityStyle = {
   low: { accent: 'hsl(145, 55%, 40%)', bg: 'hsl(145, 40%, 7%)' },
 };
 
-const FERMENTATION_STAGES = ['初期発酵', '中期発酵', '後期発酵', '熟成'];
-
 export default function BatchDetailPage({ params }: { params: { id: string } }) {
+  const { dict, locale } = useLocale();
   const [batch, setBatch] = useState<BatchWithLogs | null>(null);
   const [loading, setLoading] = useState(true);
   const [agentLoading, setAgentLoading] = useState(false);
@@ -31,11 +28,11 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
       .then((r) => r.json())
       .then((json) => {
         if (json.success) setBatch(json.data);
-        else setError(json.error ?? 'バッチの取得に失敗しました');
+        else setError(json.error ?? dict.batchDetail.fetchError);
       })
-      .catch(() => setError('ネットワークエラーが発生しました'))
+      .catch(() => setError(dict.common.networkError))
       .finally(() => setLoading(false));
-  }, [params.id]);
+  }, [dict.batchDetail.fetchError, dict.common.networkError, params.id]);
 
   const runAgentSession = async () => {
     setAgentLoading(true);
@@ -44,14 +41,14 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
       const res = await fetch('/api/agent-sessions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ batchId: params.id }),
+        body: JSON.stringify({ batchId: params.id, locale }),
       });
       const json = await res.json();
       if (!json.success) throw new Error(json.error);
       const refreshed = await fetch(`/api/batches/${params.id}`).then((r) => r.json());
       if (refreshed.success) setBatch(refreshed.data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'エージェント実行に失敗しました');
+      setError(err instanceof Error ? err.message : dict.batchDetail.runAgentError);
     } finally {
       setAgentLoading(false);
     }
@@ -67,8 +64,8 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
           fontSize: '0.875rem',
           color: 'hsl(35, 15%, 42%)',
         }}
-      >
-        読み込み中...
+        >
+        {dict.common.loading}
       </div>
     );
   }
@@ -87,7 +84,22 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
   const agentState = batch.agent_session?.agent_state;
   const actions = agentState?.actions ?? [];
 
-  const stageIndex = FERMENTATION_STAGES.indexOf(agentState?.fermentationStage ?? '');
+  const actionTypeLabel: Record<DailyAction['type'], string> = dict.batchDetail.actionTypes;
+  const stageLabels = dict.batchDetail.stages;
+  const stageValueMap: Record<string, string> = {
+    '初期発酵': stageLabels[0],
+    'Early fermentation': stageLabels[0],
+    '中期発酵': stageLabels[1],
+    'Mid fermentation': stageLabels[1],
+    '後期発酵': stageLabels[2],
+    'Late fermentation': stageLabels[2],
+    熟成: stageLabels[3],
+    Aging: stageLabels[3],
+  };
+  const localizedStage = agentState?.fermentationStage
+    ? stageValueMap[agentState.fermentationStage] ?? agentState.fermentationStage
+    : '—';
+  const stageIndex = (stageLabels as readonly string[]).indexOf(localizedStage);
 
   return (
     <div style={{ maxWidth: '52rem', margin: '0 auto', padding: '3rem 1.5rem' }}>
@@ -104,7 +116,7 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
               transition: 'color 0.2s',
             }}
           >
-            ← Batches
+            {dict.batchDetail.back}
           </span>
         </Link>
       </div>
@@ -130,8 +142,8 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
             color: 'hsl(35, 15%, 48%)',
           }}
         >
-          {new Date(batch.started_at).toLocaleDateString('ja-JP')} 仕込み開始 ·{' '}
-          <span style={{ color: 'hsl(30, 68%, 45%)' }}>{days}日経過</span>
+          {formatDate(batch.started_at, locale)} {locale === 'ja' ? '仕込み開始' : 'started'} ·{' '}
+          <span style={{ color: 'hsl(30, 68%, 45%)' }}>{formatDaysElapsed(days, locale)}</span>
         </p>
       </div>
 
@@ -148,14 +160,14 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
         }}
       >
         {[
-          { label: '発酵ステージ', value: agentState?.fermentationStage ?? '—' },
+          { label: dict.batchDetail.stats.stage, value: localizedStage },
           {
-            label: '予想完成日',
+            label: dict.batchDetail.stats.completionDate,
             value: agentState?.completionDate
-              ? new Date(agentState.completionDate).toLocaleDateString('ja-JP')
+              ? formatDate(agentState.completionDate, locale)
               : '—',
           },
-          { label: '観察ログ', value: `${batch.logs?.length ?? 0} 件` },
+          { label: dict.batchDetail.stats.observationLogs, value: formatObservationCount(batch.logs?.length ?? 0, locale) },
         ].map(({ label, value }) => (
           <div
             key={label}
@@ -183,9 +195,9 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
       {/* Fermentation stage progress */}
       {stageIndex >= 0 && (
         <div className="animate-in delay-2" style={{ marginBottom: '2.5rem' }}>
-          <div className="section-label" style={{ marginBottom: '1rem' }}>発酵ステージ</div>
+          <div className="section-label" style={{ marginBottom: '1rem' }}>{dict.batchDetail.stats.stage}</div>
           <div style={{ display: 'flex', gap: 0, position: 'relative' }}>
-            {FERMENTATION_STAGES.map((stage, i) => {
+            {stageLabels.map((stage, i) => {
               const isActive = i === stageIndex;
               const isPast = i < stageIndex;
               return (
@@ -238,7 +250,7 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
             marginBottom: '2.5rem',
           }}
         >
-          <div className="section-label" style={{ marginBottom: '0.6rem' }}>AIエージェントの評価</div>
+          <div className="section-label" style={{ marginBottom: '0.6rem' }}>{dict.batchDetail.assessment}</div>
           <p
             style={{
               fontFamily: 'var(--font-lora), serif',
@@ -255,7 +267,7 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
       {/* Action timeline */}
       {actions.length > 0 && (
         <div className="animate-in delay-3" style={{ marginBottom: '2.5rem' }}>
-          <div className="section-label" style={{ marginBottom: '1.25rem' }}>推奨アクション</div>
+          <div className="section-label" style={{ marginBottom: '1.25rem' }}>{dict.batchDetail.actions}</div>
           <div style={{ position: 'relative' }}>
             {/* Vertical line */}
             <div
@@ -354,7 +366,7 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
                             color: 'hsl(35, 12%, 40%)',
                           }}
                         >
-                          {new Date(action.scheduledDate).toLocaleDateString('ja-JP')}
+                          {formatDate(action.scheduledDate, locale)}
                         </div>
                       )}
                     </div>
@@ -390,7 +402,7 @@ export default function BatchDetailPage({ params }: { params: { id: string } }) 
           className="btn-outline"
           style={{ width: '100%' }}
         >
-          {agentLoading ? 'AIエージェント実行中...' : 'AIエージェントで今日のアクションを確認'}
+          {agentLoading ? dict.batchDetail.runningAgent : dict.batchDetail.runAgent}
         </button>
       </div>
     </div>

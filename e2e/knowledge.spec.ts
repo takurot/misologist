@@ -4,25 +4,25 @@ test.describe('Knowledge Translation Page', () => {
   test('renders input and translate button', async ({ page }) => {
     await page.goto('/knowledge');
     await expect(page.locator('textarea')).toBeVisible();
-    await expect(page.getByRole('button', { name: /科学的に解明する/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Explain scientifically/ })).toBeVisible();
   });
 
   test('translate button is disabled when input is empty', async ({ page }) => {
     await page.goto('/knowledge');
-    const btn = page.getByRole('button', { name: /科学的に解明する/ });
+    const btn = page.getByRole('button', { name: /Explain scientifically/ });
     await expect(btn).toBeDisabled();
   });
 
   test('translate button enables when text is entered', async ({ page }) => {
     await page.goto('/knowledge');
-    await page.locator('textarea').fill('塩は多めに入れると腐らない');
-    const btn = page.getByRole('button', { name: /科学的に解明する/ });
+    await page.locator('textarea').fill('Using more salt helps prevent spoilage');
+    const btn = page.getByRole('button', { name: /Explain scientifically/ });
     await expect(btn).toBeEnabled();
   });
 
   test('example chips are clickable', async ({ page }) => {
     await page.goto('/knowledge');
-    const chips = page.locator('button').filter({ hasText: /塩は多めに/ });
+    const chips = page.locator('button').filter({ hasText: /Using more salt/ });
     await expect(chips.first()).toBeVisible();
   });
 

@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react';
 import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
+import { useLocale } from '@/components/LocaleProvider';
 
 interface PhotoUploadProps {
   onImageSelect: (base64: string, mediaType: 'image/jpeg' | 'image/png' | 'image/webp') => void;
@@ -10,6 +11,7 @@ interface PhotoUploadProps {
 }
 
 export function PhotoUpload({ onImageSelect, onClear }: PhotoUploadProps) {
+  const { dict } = useLocale();
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -57,14 +59,14 @@ export function PhotoUpload({ onImageSelect, onClear }: PhotoUploadProps) {
       >
         <input
           {...getInputProps()}
-          aria-label="味噌の写真をアップロード"
+          aria-label={dict.photoUpload.ariaLabel}
           aria-describedby="photo-upload-hint"
         />
 
         {preview ? (
           <Image
             src={preview}
-            alt="アップロードした味噌の写真"
+            alt={dict.photoUpload.imageAlt}
             width={1024}
             height={1024}
             unoptimized
@@ -109,7 +111,7 @@ export function PhotoUpload({ onImageSelect, onClear }: PhotoUploadProps) {
                 transition: 'color 0.2s',
               }}
             >
-              {isDragging ? 'Drop to scan' : 'Scan / 解析'}
+              {isDragging ? dict.photoUpload.draggingLabel : dict.photoUpload.idleLabel}
             </div>
 
             <div
@@ -122,8 +124,8 @@ export function PhotoUpload({ onImageSelect, onClear }: PhotoUploadProps) {
               }}
             >
               {isDragging
-                ? 'ここにドロップ'
-                : '写真をドラッグ&ドロップ、またはクリックして選択'}
+                ? dict.photoUpload.dropHere
+                : dict.photoUpload.prompt}
             </div>
 
             <div
@@ -160,7 +162,7 @@ export function PhotoUpload({ onImageSelect, onClear }: PhotoUploadProps) {
           onMouseEnter={(e) => ((e.target as HTMLElement).style.color = 'hsl(30, 68%, 55%)')}
           onMouseLeave={(e) => ((e.target as HTMLElement).style.color = 'hsl(35, 15%, 42%)')}
         >
-          写真を変更 →
+          {dict.photoUpload.changePhoto}
         </button>
       )}
     </div>

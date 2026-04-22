@@ -15,19 +15,19 @@ describe('DiagnosisResult', () => {
   it('renders urgency level GREEN with correct label', () => {
     render(<DiagnosisResult result={base} />);
     expect(screen.getByText(/GREEN/)).toBeInTheDocument();
-    expect(screen.getByText(/正常/)).toBeInTheDocument();
+    expect(screen.getByText(/Normal/)).toBeInTheDocument();
   });
 
   it('renders urgency level YELLOW with correct label', () => {
     render(<DiagnosisResult result={{ ...base, urgencyLevel: 'YELLOW' }} />);
     expect(screen.getByText(/YELLOW/)).toBeInTheDocument();
-    expect(screen.getByText(/注意/)).toBeInTheDocument();
+    expect(screen.getByText(/Caution/)).toBeInTheDocument();
   });
 
   it('renders urgency level RED with correct label', () => {
     render(<DiagnosisResult result={{ ...base, urgencyLevel: 'RED' }} />);
     expect(screen.getByText(/RED/)).toBeInTheDocument();
-    expect(screen.getByText(/緊急/)).toBeInTheDocument();
+    expect(screen.getByText(/Critical/)).toBeInTheDocument();
   });
 
   it('displays mold type and reason', () => {
@@ -49,7 +49,7 @@ describe('DiagnosisResult', () => {
 
   it('does not render batch comparison section when absent', () => {
     render(<DiagnosisResult result={base} />);
-    expect(screen.queryByText(/過去バッチ/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Comparison with previous batches/)).not.toBeInTheDocument();
   });
 
   it('renders batch comparison when present', () => {

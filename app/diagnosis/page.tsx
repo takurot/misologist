@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { PhotoUpload } from '@/components/diagnosis/PhotoUpload';
 import { MetadataForm } from '@/components/diagnosis/MetadataForm';
 import { DiagnosisResult } from '@/components/diagnosis/DiagnosisResult';
+import { useLocale } from '@/components/LocaleProvider';
 import type { DiagnosisResult as DiagnosisResultType } from '@/types';
 
 export default function DiagnosisPage() {
+  const { dict, locale } = useLocale();
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<'image/jpeg' | 'image/png' | 'image/webp'>('image/jpeg');
   const [metadata, setMetadata] = useState<Record<string, unknown>>({});
@@ -36,14 +38,14 @@ export default function DiagnosisPage() {
       const response = await fetch('/api/diagnosis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageBase64, mediaType, ...metadata }),
+        body: JSON.stringify({ imageBase64, mediaType, locale, ...metadata }),
       });
 
       const json = await response.json();
       if (!json.success) throw new Error(json.error);
       setResult(json.data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '診断に失敗しました');
+      setError(err instanceof Error ? err.message : dict.diagnosis.errorFallback);
     } finally {
       setLoading(false);
     }
@@ -66,7 +68,7 @@ export default function DiagnosisPage() {
             marginBottom: '0.75rem',
           }}
         >
-          緊急発酵診断
+          {dict.diagnosis.heading}
         </h1>
         <p
           style={{
@@ -76,8 +78,8 @@ export default function DiagnosisPage() {
             color: 'hsl(35, 15%, 52%)',
           }}
         >
-          味噌の写真をアップロード。Claude Opus 4.7が発酵状態を診断し、<br />
-          カビの種別・化学的根拠・具体的対処法をまとめて提示します。
+          {dict.diagnosis.descriptionLine1}<br />
+          {dict.diagnosis.descriptionLine2}
         </p>
       </div>
 
@@ -100,10 +102,10 @@ export default function DiagnosisPage() {
             {loading ? (
               <span style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <BubbleLoader />
-                診断中...
+                {dict.diagnosis.loading}
               </span>
             ) : (
-              '診断する'
+              dict.diagnosis.submit
             )}
           </button>
         </div>

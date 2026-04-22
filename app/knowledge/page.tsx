@@ -1,16 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useLocale } from '@/components/LocaleProvider';
 import type { KnowledgeTranslationResult } from '@/types';
 
-const EXAMPLES = [
-  '塩は多めに入れると腐らない',
-  '天地返しは満月の夜にやると良い',
-  '怒りながら味噌を仕込むと発酵が悪くなる',
-  '夏の暑い時期に仕込む「暑仕込み」は難しい',
-];
-
 export default function KnowledgePage() {
+  const { dict, locale } = useLocale();
   const [input, setInput] = useState('');
   const [result, setResult] = useState<KnowledgeTranslationResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -28,13 +23,13 @@ export default function KnowledgePage() {
       const res = await fetch('/api/knowledge', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ knowledge }),
+        body: JSON.stringify({ knowledge, locale }),
       });
       const json = await res.json();
       if (!json.success) throw new Error(json.error);
       setResult(json.data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '翻訳に失敗しました');
+      setError(err instanceof Error ? err.message : dict.knowledge.errorFallback);
     } finally {
       setLoading(false);
     }
@@ -57,7 +52,7 @@ export default function KnowledgePage() {
             marginBottom: '0.75rem',
           }}
         >
-          職人知識翻訳
+          {dict.knowledge.heading}
         </h1>
         <p
           style={{
@@ -67,7 +62,7 @@ export default function KnowledgePage() {
             color: 'hsl(35, 15%, 52%)',
           }}
         >
-          職人の経験則・暗黙知を、発酵化学の科学言語に翻訳します。
+          {dict.knowledge.description}
         </p>
       </div>
 
@@ -92,13 +87,13 @@ export default function KnowledgePage() {
               marginBottom: '1rem',
             }}
           >
-            職人の言葉
+            {dict.knowledge.inputLabel}
           </label>
           <textarea
             id="knowledge-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="例: 塩は多めに入れると腐らない"
+            placeholder={dict.knowledge.placeholder}
             rows={5}
             onFocus={(e) => { e.target.style.outline = '2px solid hsl(30, 68%, 50%)'; }}
             onBlur={(e) => { e.target.style.outline = '2px solid transparent'; }}
@@ -132,10 +127,10 @@ export default function KnowledgePage() {
               marginBottom: '0.75rem',
             }}
           >
-            例文を試す
+            {dict.knowledge.examplesLabel}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-            {EXAMPLES.map((ex) => (
+            {dict.knowledge.examples.map((ex) => (
               <button
                 key={ex}
                 onClick={() => handleTranslate(ex)}
@@ -173,7 +168,7 @@ export default function KnowledgePage() {
           className="btn-primary"
           style={{ width: '100%' }}
         >
-          {loading ? '翻訳中...' : '科学的に解明する'}
+          {loading ? dict.knowledge.loading : dict.knowledge.submit}
         </button>
       </div>
 
@@ -229,7 +224,7 @@ export default function KnowledgePage() {
 
           {/* Scientific explanation */}
           <div>
-            <div className="section-label" style={{ marginBottom: '0.75rem' }}>科学的説明</div>
+            <div className="section-label" style={{ marginBottom: '0.75rem' }}>{dict.knowledge.sections.explanation}</div>
             <p
               style={{
                 fontFamily: 'var(--font-lora), serif',
@@ -244,14 +239,14 @@ export default function KnowledgePage() {
 
           {/* Chemistry */}
           <div>
-            <div className="section-label" style={{ marginBottom: '0.75rem' }}>発酵化学</div>
+            <div className="section-label" style={{ marginBottom: '0.75rem' }}>{dict.knowledge.sections.chemistry}</div>
             <div className="chemistry-block">{result.chemistry}</div>
           </div>
 
           {/* Practical advice */}
           {result.practicalAdvice.length > 0 && (
             <div>
-              <div className="section-label" style={{ marginBottom: '1rem' }}>実践的アドバイス</div>
+              <div className="section-label" style={{ marginBottom: '1rem' }}>{dict.knowledge.sections.advice}</div>
               <ol
                 style={{
                   listStyle: 'none',
@@ -297,7 +292,7 @@ export default function KnowledgePage() {
           {/* References */}
           {result.references && result.references.length > 0 && (
             <div>
-              <div className="section-label" style={{ marginBottom: '0.75rem' }}>関連する発酵科学の概念</div>
+              <div className="section-label" style={{ marginBottom: '0.75rem' }}>{dict.knowledge.sections.references}</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                 {result.references.map((ref, i) => (
                   <span
