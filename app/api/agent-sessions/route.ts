@@ -71,11 +71,11 @@ export async function POST(request: NextRequest) {
     const agentResult = parseJsonResponse(textContent.text) as Record<string, unknown>;
 
     const agentState: AgentState = {
-      fermentationStage: agentResult.fermentationStage,
-      lastAssessment: agentResult.assessment,
-      actions: agentResult.actions ?? [],
+      fermentationStage: agentResult.fermentationStage as string | undefined,
+      lastAssessment: agentResult.assessment as string | undefined,
+      actions: (agentResult.actions as AgentState['actions']) ?? [],
       daysElapsed,
-      completionDate: agentResult.completionDate,
+      completionDate: agentResult.completionDate as string | undefined,
     };
 
     const { data: existing } = await supabase
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
           agent_state: agentState,
           last_action_at: new Date().toISOString(),
           next_action_at: agentResult.nextCheckDate
-            ? new Date(agentResult.nextCheckDate).toISOString()
+            ? new Date(agentResult.nextCheckDate as string).toISOString()
             : null,
         })
         .eq('id', existing.id)
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
           agent_state: agentState,
           last_action_at: new Date().toISOString(),
           next_action_at: agentResult.nextCheckDate
-            ? new Date(agentResult.nextCheckDate).toISOString()
+            ? new Date(agentResult.nextCheckDate as string).toISOString()
             : null,
         })
         .select()
