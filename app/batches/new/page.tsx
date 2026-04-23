@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useLocale } from '@/components/LocaleProvider';
 
 export default function NewBatchPage() {
+  const { dict } = useLocale();
   const router = useRouter();
   const [form, setForm] = useState({
     name: '',
@@ -46,7 +48,7 @@ export default function NewBatchPage() {
       if (!json.success) throw new Error(json.error);
       router.push(`/batches/${json.data.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'バッチの作成に失敗しました');
+      setError(err instanceof Error ? err.message : dict.newBatch.errorFallback);
     } finally {
       setLoading(false);
     }
@@ -65,7 +67,7 @@ export default function NewBatchPage() {
             lineHeight: 1.1,
           }}
         >
-          新規バッチ作成
+          {dict.newBatch.heading}
         </h1>
       </div>
 
@@ -73,20 +75,20 @@ export default function NewBatchPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
           {/* Required fields */}
           <div>
-            <label htmlFor="name" className="field-label">バッチ名 *</label>
+            <label htmlFor="name" className="field-label">{dict.newBatch.name}</label>
             <input
               id="name"
               type="text"
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="例: 2024年 春仕込み"
+              placeholder={dict.newBatch.namePlaceholder}
               className="field-input"
             />
           </div>
 
           <div>
-            <label htmlFor="started_at" className="field-label">仕込み開始日 *</label>
+            <label htmlFor="started_at" className="field-label">{dict.newBatch.startedAt}</label>
             <input
               id="started_at"
               type="date"
@@ -114,54 +116,54 @@ export default function NewBatchPage() {
                 marginBottom: '1.5rem',
               }}
             >
-              レシピ情報（任意）
+              {dict.newBatch.recipeSection}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div>
-                <label htmlFor="soybeanVariety" className="field-label">大豆品種</label>
+                <label htmlFor="soybeanVariety" className="field-label">{dict.newBatch.soybeanVariety}</label>
                 <input
                   id="soybeanVariety"
                   type="text"
                   value={form.soybeanVariety}
                   onChange={(e) => setForm({ ...form, soybeanVariety: e.target.value })}
-                  placeholder="例: 鶴の子大豆"
+                  placeholder={dict.newBatch.soybeanVarietyPlaceholder}
                   className="field-input"
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
                 <div>
-                  <label htmlFor="kojRatio" className="field-label">麹歩合 (%)</label>
+                  <label htmlFor="kojRatio" className="field-label">{dict.newBatch.kojiRatio}</label>
                   <input
                     id="kojRatio"
                     type="number"
                     value={form.kojRatio}
                     onChange={(e) => setForm({ ...form, kojRatio: e.target.value })}
-                    placeholder="例: 10"
+                    placeholder={dict.newBatch.kojiRatioPlaceholder}
                     className="field-input"
                   />
                 </div>
                 <div>
-                  <label htmlFor="saltRatio" className="field-label">塩分比 (%)</label>
+                  <label htmlFor="saltRatio" className="field-label">{dict.newBatch.saltRatio}</label>
                   <input
                     id="saltRatio"
                     type="number"
                     value={form.saltRatio}
                     onChange={(e) => setForm({ ...form, saltRatio: e.target.value })}
-                    placeholder="例: 12"
+                    placeholder={dict.newBatch.saltRatioPlaceholder}
                     className="field-input"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="notes" className="field-label">メモ</label>
+                <label htmlFor="notes" className="field-label">{dict.newBatch.notes}</label>
                 <textarea
                   id="notes"
                   value={form.notes}
                   onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                  placeholder="特記事項など"
+                  placeholder={dict.newBatch.notesPlaceholder}
                   rows={3}
                   style={{
                     width: '100%',
@@ -200,7 +202,7 @@ export default function NewBatchPage() {
 
           <div style={{ display: 'flex', gap: '1rem', paddingTop: '0.5rem' }}>
             <Link href="/batches" style={{ flex: 1 }}>
-              <span className="btn-outline" style={{ width: '100%' }}>キャンセル</span>
+              <span className="btn-outline" style={{ width: '100%' }}>{dict.newBatch.cancel}</span>
             </Link>
             <button
               type="submit"
@@ -208,7 +210,7 @@ export default function NewBatchPage() {
               className="btn-primary"
               style={{ flex: 1 }}
             >
-              {loading ? '作成中...' : 'バッチを仕込む'}
+              {loading ? dict.newBatch.submitting : dict.newBatch.submit}
             </button>
           </div>
         </div>

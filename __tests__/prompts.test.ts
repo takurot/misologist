@@ -8,6 +8,20 @@ describe('buildDiagnosisPrompt', () => {
     expect(prompt).toContain('RED');
   });
 
+  it('preserves urgencyLevel enum instruction in Japanese mode', () => {
+    const prompt = buildDiagnosisPrompt({ locale: 'ja' });
+    expect(prompt).toContain('"GREEN"');
+    expect(prompt).toContain('"YELLOW"');
+    expect(prompt).toContain('"RED"');
+  });
+
+  it('preserves urgencyLevel enum instruction in English mode', () => {
+    const prompt = buildDiagnosisPrompt({ locale: 'en' });
+    expect(prompt).toContain('"GREEN"');
+    expect(prompt).toContain('"YELLOW"');
+    expect(prompt).toContain('"RED"');
+  });
+
   it('includes provided environment info', () => {
     const prompt = buildDiagnosisPrompt({
       temperature: 25,
@@ -76,5 +90,33 @@ describe('buildBatchWatcherPrompt', () => {
     });
     expect(prompt).toContain('actions');
     expect(prompt).toContain('fermentationStage');
+  });
+
+  it('preserves priority enum values instruction in Japanese mode', () => {
+    const prompt = buildBatchWatcherPrompt({
+      batchName: 'Test',
+      startDate: '2024-01-01',
+      daysElapsed: 0,
+      recipe: {},
+      recentLogs: [],
+      locale: 'ja',
+    });
+    expect(prompt).toContain('"high"');
+    expect(prompt).toContain('"medium"');
+    expect(prompt).toContain('"low"');
+  });
+
+  it('preserves priority enum values instruction in English mode', () => {
+    const prompt = buildBatchWatcherPrompt({
+      batchName: 'Test',
+      startDate: '2024-01-01',
+      daysElapsed: 0,
+      recipe: {},
+      recentLogs: [],
+      locale: 'en',
+    });
+    expect(prompt).toContain('"high"');
+    expect(prompt).toContain('"medium"');
+    expect(prompt).toContain('"low"');
   });
 });

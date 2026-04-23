@@ -2,15 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useLocale } from '@/components/LocaleProvider';
+import { formatDate, formatDaysElapsed } from '@/lib/i18n';
 import type { Batch } from '@/types';
 
-const statusConfig = {
-  active: { label: '仕込み中', color: 'hsl(145, 55%, 45%)', bg: 'hsl(145, 40%, 8%)' },
-  completed: { label: '完成', color: 'hsl(210, 55%, 55%)', bg: 'hsl(210, 40%, 8%)' },
-  failed: { label: '失敗', color: 'hsl(4, 65%, 50%)', bg: 'hsl(4, 40%, 8%)' },
+const statusColors = {
+  active: { color: 'hsl(145, 55%, 45%)', bg: 'hsl(145, 40%, 8%)' },
+  completed: { color: 'hsl(210, 55%, 55%)', bg: 'hsl(210, 40%, 8%)' },
+  failed: { color: 'hsl(4, 65%, 50%)', bg: 'hsl(4, 40%, 8%)' },
 };
 
 export default function BatchesPage() {
+  const { dict, locale } = useLocale();
   const [batches, setBatches] = useState<Batch[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
@@ -20,11 +23,11 @@ export default function BatchesPage() {
       .then((r) => r.json())
       .then((json) => {
         if (json.success) setBatches(json.data);
-        else setFetchError(json.error ?? 'バッチ一覧の取得に失敗しました');
+        else setFetchError(json.error ?? dict.batches.fetchError);
       })
-      .catch(() => setFetchError('ネットワークエラーが発生しました'))
+      .catch(() => setFetchError(dict.common.networkError))
       .finally(() => setLoading(false));
-  }, []);
+  }, [dict.batches.fetchError, dict.common.networkError]);
 
   return (
     <div style={{ maxWidth: '52rem', margin: '0 auto', padding: '3rem 1.5rem' }}>
@@ -44,11 +47,11 @@ export default function BatchesPage() {
               lineHeight: 1.1,
             }}
           >
-            バッチ管理
+            {dict.batches.heading}
           </h1>
         </div>
         <Link href="/batches/new">
-          <span className="btn-outline">新規バッチ</span>
+          <span className="btn-outline">{dict.batches.newBatch}</span>
         </Link>
       </div>
 
@@ -63,7 +66,7 @@ export default function BatchesPage() {
             letterSpacing: '0.08em',
           }}
         >
-          読み込み中...
+          {dict.common.loading}
         </div>
       ) : fetchError ? (
         <div
@@ -96,10 +99,10 @@ export default function BatchesPage() {
               marginBottom: '1.25rem',
             }}
           >
-            まだバッチがありません
+            {dict.batches.empty}
           </p>
           <Link href="/batches/new">
-            <span className="btn-primary">最初のバッチを仕込む</span>
+            <span className="btn-primary">{dict.batches.emptyCta}</span>
           </Link>
         </div>
       ) : (
@@ -108,7 +111,7 @@ export default function BatchesPage() {
             const days = Math.floor(
               (Date.now() - new Date(batch.started_at).getTime()) / (1000 * 60 * 60 * 24)
             );
-            const cfg = statusConfig[batch.status];
+            const cfg = statusColors[batch.status];
 
             return (
               <Link key={batch.id} href={`/batches/${batch.id}`} style={{ textDecoration: 'none' }}>
@@ -154,9 +157,9 @@ export default function BatchesPage() {
                       }}
                     >
                       <span>
-                        {new Date(batch.started_at).toLocaleDateString('ja-JP')} 仕込み
+                        {formatDate(batch.started_at, locale)} {dict.batches.startSuffix}
                       </span>
-                      <span style={{ color: 'hsl(30, 68%, 42%)' }}>{days}日経過</span>
+                      <span style={{ color: 'hsl(30, 68%, 42%)' }}>{formatDaysElapsed(days, locale)}</span>
                       {batch.recipe_json?.soybeanVariety && (
                         <span>{batch.recipe_json.soybeanVariety}</span>
                       )}
@@ -177,7 +180,7 @@ export default function BatchesPage() {
                         border: `1px solid ${cfg.color}40`,
                       }}
                     >
-                      {cfg.label}
+                      {dict.batches.statuses[batch.status]}
                     </span>
                   </div>
                 </article>

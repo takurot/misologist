@@ -1,5 +1,7 @@
 'use client';
 
+import { useLocale } from '@/components/LocaleProvider';
+
 interface MetadataFormProps {
   onChange: (data: {
     startDate?: string;
@@ -14,6 +16,8 @@ interface MetadataFormProps {
 const numericFields = new Set(['temperature', 'kojRatio', 'saltRatio']);
 
 export function MetadataForm({ onChange }: MetadataFormProps) {
+  const { dict } = useLocale();
+
   const handleChange = (field: string, value: string) => {
     onChange({
       [field]: numericFields.has(field) && value ? Number(value) : value || undefined,
@@ -38,7 +42,7 @@ export function MetadataForm({ onChange }: MetadataFormProps) {
           marginBottom: '1.25rem',
         }}
       >
-        環境情報（任意）
+        {dict.metadataForm.sectionTitle}
       </div>
 
       <div
@@ -50,43 +54,43 @@ export function MetadataForm({ onChange }: MetadataFormProps) {
       >
         <Field
           id="startDate"
-          label="仕込み開始日"
+          label={dict.metadataForm.startDate}
           type="date"
           onChange={(v) => handleChange('startDate', v)}
         />
         <Field
           id="temperature"
-          label="保存温度 (°C)"
+          label={dict.metadataForm.temperature}
           type="number"
-          placeholder="例: 25"
+          placeholder={dict.metadataForm.temperaturePlaceholder}
           onChange={(v) => handleChange('temperature', v)}
         />
         <Field
           id="storageLocation"
-          label="保存場所"
+          label={dict.metadataForm.storageLocation}
           type="text"
-          placeholder="例: 冷暗所、床下"
+          placeholder={dict.metadataForm.storageLocationPlaceholder}
           onChange={(v) => handleChange('storageLocation', v)}
         />
         <Field
           id="soybeanVariety"
-          label="大豆品種"
+          label={dict.metadataForm.soybeanVariety}
           type="text"
-          placeholder="例: 鶴の子大豆"
+          placeholder={dict.metadataForm.soybeanVarietyPlaceholder}
           onChange={(v) => handleChange('soybeanVariety', v)}
         />
         <Field
           id="kojRatio"
-          label="麹歩合 (%)"
+          label={dict.metadataForm.kojiRatio}
           type="number"
-          placeholder="例: 10"
+          placeholder={dict.metadataForm.kojiRatioPlaceholder}
           onChange={(v) => handleChange('kojRatio', v)}
         />
         <Field
           id="saltRatio"
-          label="塩分比 (%)"
+          label={dict.metadataForm.saltRatio}
           type="number"
-          placeholder="例: 12"
+          placeholder={dict.metadataForm.saltRatioPlaceholder}
           onChange={(v) => handleChange('saltRatio', v)}
         />
       </div>

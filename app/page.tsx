@@ -1,8 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { useLocale } from '@/components/LocaleProvider';
 
 export default function HomePage() {
+  const { dict } = useLocale();
+  const [featureOne, featureTwo, featureThree] = dict.home.features;
+
   return (
     <div>
       {/* ── Hero ─────────────────────────────────── */}
@@ -46,7 +50,7 @@ export default function HomePage() {
         >
           {/* Decorative label */}
           <div className="animate-in" style={{ marginBottom: '1.5rem' }}>
-            <span className="section-label">Fermentation Intelligence</span>
+            <span className="section-label">{dict.home.label}</span>
           </div>
 
           {/* Main headline */}
@@ -63,7 +67,7 @@ export default function HomePage() {
               maxWidth: '18ch',
             }}
           >
-            発酵を、<br />
+            {dict.home.headlineLeading}<br />
             <em
               style={{
                 fontStyle: 'italic',
@@ -71,7 +75,7 @@ export default function HomePage() {
                 fontWeight: 400,
               }}
             >
-              科学にする。
+              {dict.home.headlineAccent}
             </em>
           </h1>
 
@@ -87,13 +91,13 @@ export default function HomePage() {
               marginBottom: '2.5rem',
             }}
           >
-            味噌職人20年の経験を、Claude Opus 4.7が発酵化学として語る。<br />
-            写真一枚から、カビの種別・化学的根拠・対処法まで。
+            {dict.home.descriptionLine1}<br />
+            {dict.home.descriptionLine2}
           </p>
 
           <div className="animate-in delay-3">
             <Link href="/diagnosis">
-              <span className="btn-primary">診断を開始する</span>
+              <span className="btn-primary">{dict.home.cta}</span>
             </Link>
           </div>
         </div>
@@ -115,7 +119,7 @@ export default function HomePage() {
             zIndex: 0,
           }}
         >
-          味
+          {dict.home.decorativeMark}
         </div>
       </section>
 
@@ -134,9 +138,9 @@ export default function HomePage() {
           <FeatureCard
             num="01"
             href="/diagnosis"
-            title="緊急発酵診断"
-            subtitle="Emergency Triage"
-            description="発酵写真をドロップするだけ。Opus 4.7のVisionがカビ種別を判定し、GREEN / YELLOW / REDの緊急度とともに発酵化学的根拠を生成します。"
+            title={featureOne.title}
+            subtitle={featureOne.subtitle}
+            description={featureOne.description}
             delay="delay-1"
             large
           />
@@ -144,9 +148,9 @@ export default function HomePage() {
           <FeatureCard
             num="02"
             href="/batches"
-            title="バッチ監視"
-            subtitle="Async Agent"
-            description="1バッチ = 1エージェントセッション。仕込みから熟成まで、AIが毎日のアクションを非同期で提案します。"
+            title={featureTwo.title}
+            subtitle={featureTwo.subtitle}
+            description={featureTwo.description}
             delay="delay-2"
             borderLeft
           />
@@ -154,9 +158,9 @@ export default function HomePage() {
           <FeatureCard
             num="03"
             href="/knowledge"
-            title="職人知識翻訳"
-            subtitle="Knowledge Translation"
-            description="「塩は多めに」という経験則を、浸透圧・水分活性の科学言語に翻訳。暗黙知を次世代へ継承します。"
+            title={featureThree.title}
+            subtitle={featureThree.subtitle}
+            description={featureThree.description}
             delay="delay-3"
             borderLeft
           />
@@ -177,8 +181,8 @@ export default function HomePage() {
               marginBottom: '1.5rem',
             }}
           >
-            &ldquo;味噌職人の20年の経験を、<br />
-            Opus 4.7 が科学として語る。&rdquo;
+            &ldquo;{dict.home.quoteLine1}<br />
+            {dict.home.quoteLine2}&rdquo;
           </div>
           <div
             style={{
@@ -211,6 +215,8 @@ interface FeatureCardProps {
 function FeatureCard({
   num, href, title, subtitle, description, delay, large, borderLeft,
 }: FeatureCardProps) {
+  const { dict } = useLocale();
+
   return (
     <Link href={href} style={{ textDecoration: 'none', display: 'block' }}>
       <article
@@ -291,7 +297,7 @@ function FeatureCard({
             fontFamily: 'var(--font-lora), serif',
           }}
         >
-          探索する →
+          {dict.home.featureExplore}
         </div>
       </article>
     </Link>

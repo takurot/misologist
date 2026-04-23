@@ -1,22 +1,17 @@
 import type { DiagnosisResult as DiagnosisResultType } from '@/types';
+import { useLocale } from '@/components/LocaleProvider';
 
 const urgencyConfig = {
   GREEN: {
-    label: '正常',
     badge: { bg: 'hsl(145, 40%, 9%)', border: 'hsl(145, 45%, 20%)', text: 'hsl(145, 55%, 52%)' },
-    glow: 'none',
     strip: { bg: 'hsl(145, 40%, 8%)', border: 'hsl(145, 45%, 16%)' },
   },
   YELLOW: {
-    label: '注意',
     badge: { bg: 'hsl(35, 40%, 9%)', border: 'hsl(38, 50%, 24%)', text: 'hsl(38, 75%, 52%)' },
-    glow: 'none',
     strip: { bg: 'hsl(35, 40%, 8%)', border: 'hsl(38, 50%, 18%)' },
   },
   RED: {
-    label: '緊急',
     badge: { bg: 'hsl(4, 50%, 10%)', border: 'hsl(4, 55%, 28%)', text: 'hsl(4, 65%, 58%)' },
-    glow: 'animation: dangerPulse 2s ease-in-out infinite',
     strip: { bg: 'hsl(4, 50%, 8%)', border: 'hsl(4, 55%, 22%)' },
   },
 };
@@ -26,6 +21,7 @@ interface DiagnosisResultProps {
 }
 
 export function DiagnosisResult({ result }: DiagnosisResultProps) {
+  const { dict } = useLocale();
   const cfg = urgencyConfig[result.urgencyLevel];
 
   return (
@@ -54,7 +50,7 @@ export function DiagnosisResult({ result }: DiagnosisResultProps) {
               marginBottom: '0.3rem',
             }}
           >
-            Urgency Level
+            {dict.diagnosisResult.urgencyHeading}
           </div>
           <div
             style={{
@@ -65,7 +61,7 @@ export function DiagnosisResult({ result }: DiagnosisResultProps) {
               lineHeight: 1,
             }}
           >
-            {cfg.label}
+            {dict.diagnosisResult.urgencyLabels[result.urgencyLevel]}
           </div>
         </div>
         <div
@@ -92,16 +88,16 @@ export function DiagnosisResult({ result }: DiagnosisResultProps) {
           gap: '1.25rem',
         }}
       >
-        <InfoRow label="検出されたカビ" value={result.moldType} large />
+        <InfoRow label={dict.diagnosisResult.detectedMold} value={result.moldType} large />
         <div style={{ borderTop: '1px solid hsl(25, 18%, 14%)', paddingTop: '1.25rem' }}>
-          <InfoRow label="発生原因" value={result.moldReason} />
+          <InfoRow label={dict.diagnosisResult.cause} value={result.moldReason} />
         </div>
       </div>
 
       {/* Fermentation chemistry */}
       <div>
         <div className="section-label" style={{ marginBottom: '0.75rem' }}>
-          発酵化学的解説
+          {dict.diagnosisResult.chemistry}
         </div>
         <div className="chemistry-block">
           {result.fermentationChemistry}
@@ -112,7 +108,7 @@ export function DiagnosisResult({ result }: DiagnosisResultProps) {
       {result.immediateActions.length > 0 && (
         <div>
           <div className="section-label" style={{ marginBottom: '1rem' }}>
-            今すぐ実施すること
+            {dict.diagnosisResult.immediateActions}
           </div>
           <ol style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {result.immediateActions.map((action, i) => (
@@ -161,7 +157,7 @@ export function DiagnosisResult({ result }: DiagnosisResultProps) {
       {result.preventionTips.length > 0 && (
         <div>
           <div className="section-label" style={{ marginBottom: '0.75rem' }}>
-            再発防止策
+            {dict.diagnosisResult.preventionTips}
           </div>
           <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {result.preventionTips.map((tip, i) => (
@@ -198,7 +194,7 @@ export function DiagnosisResult({ result }: DiagnosisResultProps) {
           }}
         >
           <div className="section-label" style={{ marginBottom: '0.5rem' }}>
-            過去バッチとの比較
+            {dict.diagnosisResult.batchComparison}
           </div>
           <p
             style={{
