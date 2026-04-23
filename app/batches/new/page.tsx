@@ -1,20 +1,25 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useLocale } from '@/components/LocaleProvider';
 
 export default function NewBatchPage() {
   const { dict } = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const recipeId = searchParams.get('recipeId');
+
+  const todayString = (() => {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    return now.toISOString().slice(0, 10);
+  })();
+
   const [form, setForm] = useState({
     name: '',
-    started_at: (() => {
-      const now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-      return now.toISOString().slice(0, 10);
-    })(),
+    started_at: todayString,
     soybeanVariety: '',
     kojRatio: '',
     saltRatio: '',
@@ -22,6 +27,24 @@ export default function NewBatchPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!recipeId) return;
+    fetch(`/api/recipes/${recipeId}`)
+      .then((r) => r.json())
+      .then((json) => {
+        if (!json.success) return;
+        const r = json.data;
+        setForm((prev) => ({
+          ...prev,
+          soybeanVariety: r.soybean_variety ?? prev.soybeanVariety,
+          kojRatio: r.koji_ratio != null ? String(r.koji_ratio) : prev.kojRatio,
+          saltRatio: r.salt_ratio != null ? String(r.salt_ratio) : prev.saltRatio,
+          notes: r.notes ?? prev.notes,
+        }));
+      })
+      .catch(() => undefined);
+  }, [recipeId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

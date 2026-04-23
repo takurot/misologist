@@ -77,6 +77,36 @@ ${knowledge}
 JSONのみを返してください。コードブロックマーカーは含めないでください。`;
 }
 
+export function buildRecipeGenerationPrompt(targetFlavor: string, locale: Locale = 'ja'): string {
+  const valueLanguage = locale === 'ja' ? '日本語' : 'English';
+
+  return `あなたは味噌醸造の専門家です。以下の目標とする風味プロフィールに基づき、最適な味噌レシピパラメータを提案してください。
+
+【目標の風味・特徴】
+${targetFlavor}
+
+以下のJSON形式で回答してください：
+
+\`\`\`json
+{
+  "targetFlavor": "目標とする風味の要約",
+  "recommendedParameters": {
+    "kojRatio": 10,
+    "saltRatio": 12,
+    "soybeanVariety": "推奨大豆品種",
+    "fermentationTemp": 20,
+    "fermentationDuration": "推奨熟成期間"
+  },
+  "reasoning": "このパラメータを推奨する科学的・醸造的根拠",
+  "expectedOutcome": "このレシピで期待できる風味・品質の説明"
+}
+\`\`\`
+
+各JSONフィールドの値は${valueLanguage}で記述してください。フィールド名はそのまま英字キーを使ってください。kojRatio と saltRatio は数値で返してください。
+
+JSONのみを返してください。コードブロックマーカーは含めないでください。`;
+}
+
 export function buildBatchWatcherPrompt(params: {
   locale?: Locale;
   batchName: string;

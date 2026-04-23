@@ -58,6 +58,9 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
               <Link href="/batches" className="nav-link">
                 {dict.nav.batches}
               </Link>
+              <Link href="/recipes" className="nav-link">
+                {dict.nav.recipes}
+              </Link>
               <Link href="/knowledge" className="nav-link">
                 {dict.nav.knowledge}
               </Link>
