@@ -100,6 +100,21 @@ export interface ReverseEngineeringResult {
   expectedOutcome: string;
 }
 
+export interface Recipe {
+  id: string;
+  name: string;
+  description?: string;
+  miso_type?: string;
+  koji_ratio?: number;
+  salt_ratio?: number;
+  soybean_variety?: string;
+  water_content?: number;
+  fermentation_duration?: string;
+  notes?: string;
+  is_template: boolean;
+  created_at: string;
+}
+
 export interface DiagnosisRequest {
   imageBase64: string;
   mediaType: 'image/jpeg' | 'image/png' | 'image/webp';
