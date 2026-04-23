@@ -41,7 +41,7 @@ ${envContext ? `【環境情報】\n${envContext}\n` : ''}
 }
 \`\`\`
 
-各JSONフィールドの値は${valueLanguage}で記述してください。フィールド名はそのまま英字キーを使ってください。
+各JSONフィールドの値は${valueLanguage}で記述してください。ただし "urgencyLevel" の値は必ず "GREEN"、"YELLOW"、"RED" のいずれかを使用してください。フィールド名はそのまま英字キーを使ってください。
 
 緊急度レベルの基準：
 - GREEN: 正常な発酵状態。白カビ（産膜酵母）は通常許容範囲
@@ -146,7 +146,7 @@ ${logsText || '記録なし'}
 }
 \`\`\`
 
-各JSONフィールドの値は${valueLanguage}で記述してください。フィールド名と "type" の列挙値は指定どおりに保ってください。
+各JSONフィールドの値は${valueLanguage}で記述してください。フィールド名、"type" の列挙値、"priority" の列挙値 ("high"/"medium"/"low") は指定どおりに保ってください。
 
 JSONのみを返してください。`;
 }
