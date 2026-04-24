@@ -1,8 +1,8 @@
 # Misologist — 機能仕様書
 
 **発酵診断・職人知識継承エンジン**
-Anthropic Hackathon 2025 — Built with Opus 4.7
-Version 1.0 | April 2025
+Anthropic Hackathon 2026 — Built with Opus 4.7
+Version 1.0 | April 2026
 
 > 「味噌職人の20年の経験を、Opus 4.7 が科学として語る」
 > 発酵の失敗を防ぎ、職人の暗黙知を継承するAIエージェントプラットフォーム
@@ -174,7 +174,7 @@ agent_sessions: session_id / batch_id / agent_state / last_action_at / next_acti
 
 ---
 
-*Misologist — Built with Opus 4.7 | Anthropic Hackathon 2025 | MIT License*
+*Misologist — Built with Opus 4.7 | Anthropic Hackathon 2026 | MIT License*
 
 ---
 

@@ -28,7 +28,7 @@ const dictionaries = {
     },
     footer: {
       builtWith: 'Misologist — Built with Claude Opus 4.7',
-      hackathon: 'Anthropic Hackathon 2025',
+      hackathon: 'Anthropic Hackathon 2026',
     },
     common: {
       loading: 'Loading...',
@@ -268,7 +268,7 @@ const dictionaries = {
     },
     footer: {
       builtWith: 'Misologist — Built with Claude Opus 4.7',
-      hackathon: 'Anthropic Hackathon 2025',
+      hackathon: 'Anthropic Hackathon 2026',
     },
     common: {
       loading: '読み込み中...',
