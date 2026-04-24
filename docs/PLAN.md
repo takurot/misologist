@@ -1,6 +1,6 @@
 # Misologist — 実装計画
 
-**Anthropic Hackathon 2025 | 締切: 2026-04-26 20:00 EST**
+**Anthropic Hackathon 2026 | 締切: 2026-04-26 20:00 EST**
 
 ---
 
@@ -361,4 +361,4 @@ interface DiagnosisResult {
 
 ---
 
-*Misologist — Built with Opus 4.7 | Anthropic Hackathon 2025*
+*Misologist — Built with Opus 4.7 | Anthropic Hackathon 2026*

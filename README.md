@@ -4,7 +4,7 @@ Japanese README: [README.ja.md](README.ja.md)
 
 > "Twenty years of miso craftsmanship, explained as science by Opus 4.7."
 
-**Anthropic Hackathon 2025 — Built with Opus 4.7**
+**Anthropic Hackathon 2026 — Built with Opus 4.7**
 
 ## Overview
 

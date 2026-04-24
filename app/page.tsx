@@ -193,7 +193,7 @@ export default function HomePage() {
               color: 'hsl(30, 68%, 45%)',
             }}
           >
-            Misologist — Anthropic Hackathon 2025
+            Misologist — Anthropic Hackathon 2026
           </div>
         </div>
       </section>

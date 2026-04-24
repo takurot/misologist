@@ -2,7 +2,7 @@
 
 > 「味噌職人の20年の経験を、Opus 4.7 が科学として語る」
 
-**Anthropic Hackathon 2025 — Built with Opus 4.7**
+**Anthropic Hackathon 2026 — Built with Opus 4.7**
 
 ---
 
@@ -124,4 +124,4 @@ MIT License — see [LICENSE](LICENSE)
 
 ---
 
-*Misologist — Built with Opus 4.7 | Anthropic Hackathon 2025*
+*Misologist — Built with Opus 4.7 | Anthropic Hackathon 2026*
