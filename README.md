@@ -2,7 +2,7 @@
 
 Japanese README: [README.ja.md](README.ja.md)
 
-**Last updated:** 2026-04-25
+**Last updated:** 2026-04-26
 
 > "Twenty years of miso craftsmanship, explained as science by Opus 4.7."
 
@@ -11,6 +11,32 @@ Japanese README: [README.ja.md](README.ja.md)
 ## Overview
 
 Misologist is an AI-assisted platform for home miso makers, small breweries, and fermentation researchers. It helps diagnose fermentation issues from photos, translate craft knowledge into fermentation chemistry, and manage miso batch records with Supabase.
+
+## Product Walkthrough
+
+### Diagnose
+
+<img src="img/Diagnose.png" alt="Misologist diagnosis screen with photo upload, batch metadata, and diagnosis action" width="420">
+
+The diagnosis flow lets judges see the core AI interaction: a fermentation photo is combined with batch metadata, then sent to Claude Opus 4.7 for urgency, mold identification, chemistry rationale, and remediation steps.
+
+### Knowledge Translation
+
+<img src="img/Knowledge.png" alt="Misologist craft knowledge translation screen" width="420">
+
+The knowledge screen demonstrates the second AI workflow: traditional fermentation heuristics are converted into practical fermentation chemistry explanations.
+
+### Recipes
+
+<img src="img/Recipes.png" alt="Misologist recipe library and AI recipe generation screen" width="420">
+
+The recipe library shows starter recipes, saved recipes, and reverse design from a target flavor profile. Generated recipe ideas can be saved and reused when creating a batch.
+
+### Batches
+
+<img src="img/Batches.png" alt="Misologist batch dashboard showing active fermentation batches" width="420">
+
+The batch dashboard shows the longitudinal product direction: saved miso batches, elapsed fermentation time, recipe context, and entry points into on-demand AI monitoring.
 
 ## Current Features
 
