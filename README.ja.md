@@ -1,101 +1,113 @@
-# Misologist — 発酵診断・職人知識継承エンジン
+# Misologist - 発酵診断・職人知識継承エンジン
+
+**最終更新:** 2026-04-25
 
 > 「味噌職人の20年の経験を、Opus 4.7 が科学として語る」
 
-**Anthropic Hackathon 2026 — Built with Opus 4.7**
-
----
+**Anthropic Hackathon 2026 - Built with Opus 4.7**
 
 ## 概要
 
-Misologist は、家庭味噌仕込み愛好家・小規模味噌蔵・発酵研究者向けの AI エージェントプラットフォームです。年1回しかチャンスのない味噌仕込みの失敗を防ぎ、職人の暗黙知を科学として継承します。
+Misologist は、家庭味噌仕込み愛好家・小規模味噌蔵・発酵研究者向けの AI 支援アプリです。発酵写真からの緊急診断、職人知識の発酵化学への翻訳、味噌バッチとレシピの記録管理を行います。
 
-### なぜ Opus 4.7 でなければならないか
+## 現在の機能
 
-| 他のモデルで代替できないこと | Opus 4.7 の能力 |
-|---|---|
-| 複数バッチ・複数月の発酵ログ全体を参照した比較推論 | 長文コンテキスト統合 |
-| 「寒仕込みは旨味が出る」→ メイラード反応・アミノ酸生成への変換 | 職人暗黙知の科学翻訳 |
-| 「このカビは除去すれば問題ない」判断の発酵化学的プロセス逐次説明 | 不確実性の定量化と根拠生成 |
+### 緊急発酵診断
 
----
+発酵写真をアップロードすると、Claude Opus 4.7 が構造化された診断結果を返します。
 
-## 機能
+- **カビ種別判定:** 産膜酵母らしき白い膜、青カビ、赤色酵母などを判別します。
+- **緊急度レベル:** `GREEN` / `YELLOW` / `RED`。
+- **発酵化学的根拠:** なぜ問題がある、または問題が小さいと考えられるかを説明します。
+- **具体的アクション:** 除去手順、観察ポイント、再発防止策を提示します。
+- **メタデータ反映:** 開始日、温度、保存場所、大豆品種、麹歩合、塩分比を任意でプロンプトに反映します。
 
-### Feature 1 — 緊急発酵診断
+写真は現在、base64 画像データとして診断 API に送信されます。Supabase Storage の bucket はスキーマ上で定義されていますが、アップロード写真を Storage に永続保存するフローはまだ接続されていません。
 
-発酵写真をアップロードすると Opus 4.7 が即座に診断します。
+### バッチ監視
 
-- **カビ種別判定:** 白カビ（産膜酵母/良性）/ 青カビ（ペニシリウム/危険）/ 赤カビ（ロドトルラ/要確認）
-- **緊急度レベル:** GREEN / YELLOW / RED
-- **発酵化学的根拠:** なぜそのカビが問題/問題でないかのメカニズム解説
-- **具体的アクション:** 除去手順・消毒方法・再発防止策（ステップバイステップ）
-- **過去バッチとの比較:** 「3ヶ月前の同条件バッチと比較してカビ発生が2週間早い」等の縦断推論
+バッチを作成し、詳細ページで状態を確認し、AI によるバッチ評価をオンデマンドで生成できます。
 
-### Feature 2 — バッチ監視エージェント（Managed Agents）
+- バッチ情報は Supabase に保存されます。
+- バッチ評価はアプリの API から都度生成されます。
+- 最新の評価結果は `agent_sessions` に保存されます。
+- モデル応答に含まれる場合、次回確認日時を `next_action_at` に保存します。
 
-仕込んだ日から完成まで、バックグラウンドで非同期常時監視。
+現状は Claude Managed Agents による長期常駐タスクや定期実行ワーカーではありません。`app/api/agent-sessions/route.ts` に実装されたオンデマンド API フローです。
 
-- バッチ1つ = 1エージェントセッション（最長12ヶ月の長期タスク）
-- 毎日定刻に「今日のアクション」を生成（天地返し推奨・天候対応・塩嘗め時期）
-- 熟成速度から完成日を動的に再計算・更新
+### 職人知識翻訳
 
-### Feature 3 — 職人知識翻訳エンジン
+味噌作りの経験則や伝承知識を入力すると、Claude Opus 4.7 が発酵化学の観点から説明します。
 
-職人の経験則を Opus 4.7 が発酵化学に翻訳します。
+### レシピ管理と逆引き設計
 
-- **翻訳モード:** 「寒仕込みにすると旨味が強くなる気がする」→ プロテアーゼ活性・グルタミン酸生成の科学的説明
-- **逆引きモード:** 「酸味を抑えて甘みを強くしたい」→ 麹歩合・仕込み温度・熟成期間の最適パラメータを逆算
+スターターレシピの閲覧、カスタムレシピの保存、目標の味からのレシピ生成ができます。
 
----
+- スターターレシピは Supabase スキーマでseedされます。
+- 保存したレシピは `recipes` テーブルに保存されます。
+- AI が生成したレシピ案はアプリ上から保存できます。
 
-## ピボットの記録
+## プロダクト方針
 
-最初のアイデア（単発写真診断ツール）から、以下3点を根本的に修正しました。
+最初のアイデアは単発写真診断ツールでしたが、以下の方向へ設計を調整しています。
 
-| 修正前の問題 | 根拠 | 修正後の設計 |
+| 修正前の問題 | 根拠 | 現在の方向性 |
 |---|---|---|
-| 単発写真診断 | Vision診断は小型モデルでも代替可能。Opus 4.7の必然性なし | 複数バッチ・複数年の長文ログを統合した縦断推論 |
-| 発酵スコア0-100 | 計算根拠が曖昧 | Opus 4.7が発酵化学的根拠付きで「なぜそのスコアか」を説明生成 |
-| Managed Agentsを同期タスクに使用 | 短時間タスクではMCAの強みを無駄にする | バッチ監視エージェントとして非同期常時動作 |
-
----
+| 単発写真診断のみ | Vision診断だけでは Opus 4.7 の必然性が弱い | バッチメタデータと将来的な縦断ログを組み合わせた診断 |
+| 発酵スコア0-100 | 計算根拠が曖昧 | 発酵化学に基づく説明生成 |
+| 短時間の同期エージェント処理 | 長期非同期エージェントの強みを活かしにくい | バッチ記録とオンデマンド評価を実装し、将来の定期監視に拡張可能な形にする |
 
 ## 技術スタック
 
 | レイヤー | コンポーネント | 役割 |
 |---|---|---|
-| フロントエンド | Next.js 14 App Router + shadcn/ui | 写真アップロード・診断結果表示・バッチダッシュボード |
-| AI エンジン | Claude Opus 4.7 | Vision診断・発酵推論・知識翻訳・根拠生成 |
-| エージェント基盤 | Claude Managed Agents | 非同期バッチ監視・長期セッション管理 |
-| データ | Supabase (PostgreSQL) | バッチログ・診断履歴・写真メタデータ |
-| ストレージ | Supabase Storage | 発酵写真のバイナリ保存 |
-| デプロイ | Vercel | サーバーレス実行環境 |
-
----
+| フロントエンド | Next.js 14 App Router | 診断UI、知識翻訳、レシピ、バッチダッシュボード |
+| AI エンジン | Claude Opus 4.7 via Anthropic SDK | Vision診断、発酵推論、知識翻訳、レシピ生成 |
+| API 実行環境 | Next.js Route Handlers | `app/api/**` のアプリAPI |
+| データ | Supabase Postgres | バッチ、レシピ、エージェント状態、スキーマ定義済みログ |
+| ストレージ | Supabase Storage | `miso-photos` bucket は定義済み。アップロードフローは未接続 |
+| デプロイ | Vercel | フルスタック Next.js 実行環境 |
 
 ## セットアップ
 
 ### 前提条件
 
 - Node.js 18+
-- Supabase アカウント
-- Anthropic API キー（Opus 4.7 アクセス権）
+- Opus 4.7 にアクセスできる Anthropic API キー
+- バッチ・レシピ保存機能を使う場合は Supabase プロジェクト
 
 ### 環境変数
 
-`.env.local` を作成:
+`.env.local` を作成します。
+
+診断、知識翻訳、レシピ生成など AI のみのフロー:
+
+```env
+ANTHROPIC_API_KEY=your_anthropic_api_key
+```
+
+バッチとレシピの保存機能:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-ANTHROPIC_API_KEY=your_anthropic_api_key
 ```
+
+`SUPABASE_SERVICE_ROLE_KEY` は現在のアプリケーションコードでは使用していません。
 
 ### Supabase スキーマ初期化
 
-Supabase SQL Editor で `docs/schema.sql` を実行してください。
+Hosted Supabase を使う場合は、Supabase SQL Editor で `docs/schema.sql` を実行するか、`supabase/migrations/` 配下のマイグレーションを利用してください。
+
+スキーマは以下を作成します。
+
+- `batches`
+- `logs`
+- `agent_sessions`
+- `recipes`
+- `miso-photos` Storage bucket
+
+現在のRLSポリシーは開発向けの `allow_all_*` です。本番公開前に認証・権限設計に合わせて置き換えてください。
 
 ### インストール・起動
 
@@ -106,22 +118,25 @@ npm run dev
 
 `http://localhost:3000` で起動します。
 
----
-
 ## データスキーマ
 
 ```sql
-batches:       id / name / started_at / recipe_json / status
-logs:          id / batch_id / captured_at / photo_url / env_json / diagnosis_json / action_json
-agent_sessions: id / batch_id / agent_state / last_action_at / next_action_at
+batches:        id / name / started_at / recipe_json / status / created_at
+logs:           id / batch_id / captured_at / photo_url / env_json / diagnosis_json / action_json / created_at
+agent_sessions: id / batch_id / agent_state / last_action_at / next_action_at / created_at
+recipes:        id / name / description / miso_type / koji_ratio / salt_ratio / soybean_variety / water_content / fermentation_duration / notes / is_template / created_at
 ```
 
----
+## よく使うコマンド
+
+```bash
+npm run dev
+npm run build
+npm run lint
+npm test -- --runInBand
+npm run test:e2e
+```
 
 ## ライセンス
 
-MIT License — see [LICENSE](LICENSE)
-
----
-
-*Misologist — Built with Opus 4.7 | Anthropic Hackathon 2026*
+MIT License - see [LICENSE](LICENSE)
