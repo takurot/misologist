@@ -66,7 +66,7 @@ Misologist は、家庭味噌仕込み愛好家・小規模味噌蔵・発酵研
 | API 実行環境 | Next.js Route Handlers | `app/api/**` のアプリAPI |
 | データ | Supabase Postgres | バッチ、レシピ、エージェント状態、スキーマ定義済みログ |
 | ストレージ | Supabase Storage | `miso-photos` bucket は定義済み。アップロードフローは未接続 |
-| デプロイ | Vercel または Firebase App Hosting | フルスタック Next.js 実行環境 |
+| デプロイ | Vercel | フルスタック Next.js 実行環境 |
 
 ## セットアップ
 

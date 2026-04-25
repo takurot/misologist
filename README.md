@@ -68,7 +68,7 @@ This project started as a one-shot photo diagnosis tool and was redesigned aroun
 | API Runtime | Next.js Route Handlers | App API endpoints under `app/api/**` |
 | Data | Supabase Postgres | Batches, recipes, agent session state, schema-defined logs |
 | Storage | Supabase Storage | `miso-photos` bucket is defined; upload flow is not yet connected |
-| Deployment | Vercel or Firebase App Hosting | Full-stack Next.js runtime |
+| Deployment | Vercel | Full-stack Next.js runtime |
 
 ## Setup
 
